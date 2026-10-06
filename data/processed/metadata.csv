@@ -1,20 +1,125 @@
 pdb_id,category,ligand,name,pdb_file,split
 1ATP,ATP,ATP,cAMP-dependent protein kinase,data/raw/1ATP.pdb,train
+1STC,STU,STU,cAMP-dependent protein kinase,data/raw/1STC.pdb,train
+1FMO,ADN,ADN,cAMP-dependent protein kinase,data/raw/1FMO.pdb,train
 1HCK,ATP,ATP,cyclin-dependent kinase 2,data/raw/1HCK.pdb,train
+1FIN,ATP,ATP,cyclin-dependent kinase 2,data/raw/1FIN.pdb,train
+1AQ1,STU,STU,cyclin-dependent kinase 2,data/raw/1AQ1.pdb,train
+1CKP,PVB,PVB,cyclin-dependent kinase 2,data/raw/1CKP.pdb,train
+2C6O,4SP,4SP,cyclin-dependent kinase 2,data/raw/2C6O.pdb,train
 1CSN,ATP,ATP,casein kinase 1,data/raw/1CSN.pdb,train
+1PHK,ATP,ATP,phosphorylase kinase,data/raw/1PHK.pdb,train
+1JWH,ANP,ANP,casein kinase 2,data/raw/1JWH.pdb,train
+1A9U,SB2,SB2,p38 MAP kinase,data/raw/1A9U.pdb,train
+1BMK,SB5,SB5,p38 MAP kinase,data/raw/1BMK.pdb,train
+1UWH,BAX,BAX,B-Raf,data/raw/1UWH.pdb,train
+1Q3D,STU,STU,GSK3,data/raw/1Q3D.pdb,train
+1Q41,IXM,IXM,GSK3,data/raw/1Q41.pdb,train
+1O6K,ANP,ANP,AKT,data/raw/1O6K.pdb,train
+1XWS,BI1,BI1,Pim-1,data/raw/1XWS.pdb,train
+1QPE,PP2,PP2,Lck,data/raw/1QPE.pdb,train
+2B7A,IZA,IZA,JAK2,data/raw/2B7A.pdb,train
+1T46,STI,STI,Kit,data/raw/1T46.pdb,train
+2FGI,PD1,PD1,FGFR1,data/raw/2FGI.pdb,train
+1AGW,SU2,SU2,FGFR1,data/raw/1AGW.pdb,train
+1NVQ,UCN,UCN,Chk1,data/raw/1NVQ.pdb,train
+1XBB,STI,STI,Syk,data/raw/1XBB.pdb,train
+1U59,STU,STU,ZAP-70,data/raw/1U59.pdb,train
+2SRC,ANP,ANP,Src,data/raw/2SRC.pdb,train
+2RFS,AM8,AM8,c-Met,data/raw/2RFS.pdb,train
+1Y6A,AAZ,AAZ,VEGFR2,data/raw/1Y6A.pdb,train
+1PY5,PY1,PY1,TGF-beta receptor,data/raw/1PY5.pdb,train
+1SM2,STU,STU,Itk,data/raw/1SM2.pdb,train
 1BYQ,ADP,ADP,Hsp90,data/raw/1BYQ.pdb,train
+1UY6,PU3,PU3,Hsp90,data/raw/1UY6.pdb,train
 1AKE,AP5,AP5,adenylate kinase,data/raw/1AKE.pdb,train
+1ZIN,AP5,AP5,adenylate kinase,data/raw/1ZIN.pdb,train
 1MBO,HEM,HEM,myoglobin,data/raw/1MBO.pdb,train
+1MBN,HEM,HEM,myoglobin,data/raw/1MBN.pdb,train
 1HDA,HEM,HEM,hemoglobin,data/raw/1HDA.pdb,train
+1HHO,HEM,HEM,hemoglobin,data/raw/1HHO.pdb,train
+2HHB,HEM,HEM,hemoglobin,data/raw/2HHB.pdb,train
 2HCK,QUE,QUE,Src-family kinase Hck,data/raw/2HCK.pdb,train
 1HSG,MK1,MK1,HIV protease,data/raw/1HSG.pdb,train
+1HVR,XK2,XK2,HIV protease,data/raw/1HVR.pdb,train
+1HPX,KNI,KNI,HIV protease,data/raw/1HPX.pdb,train
+4PHV,VAC,VAC,HIV protease,data/raw/4PHV.pdb,train
 3ERT,OHT,OHT,estrogen receptor,data/raw/3ERT.pdb,train
+1ERE,EST,EST,estrogen receptor,data/raw/1ERE.pdb,train
+1ERR,RAL,RAL,estrogen receptor,data/raw/1ERR.pdb,train
 1HWK,117,117,HMG-CoA reductase,data/raw/1HWK.pdb,train
 1EVE,E20,E20,acetylcholinesterase,data/raw/1EVE.pdb,train
+1EQG,IBP,IBP,COX-1,data/raw/1EQG.pdb,train
+1PGG,IMM,IMM,COX-1,data/raw/1PGG.pdb,train
+1OG5,SWF,SWF,CYP2C9,data/raw/1OG5.pdb,train
+1R9O,FLP,FLP,CYP2C9,data/raw/1R9O.pdb,train
+1HDX,NAD,NAD,alcohol dehydrogenase,data/raw/1HDX.pdb,train
+1I10,NAI,NAI,lactate dehydrogenase,data/raw/1I10.pdb,train
+1AH3,TOL,TOL,aldose reductase,data/raw/1AH3.pdb,train
+1EL3,I84,I84,aldose reductase,data/raw/1EL3.pdb,train
+1HFC,PLH,PLH,matrix metalloproteinase,data/raw/1HFC.pdb,train
+1CGL,0ED,0ED,collagenase,data/raw/1CGL.pdb,train
+4TMN,0PK,0PK,thermolysin,data/raw/4TMN.pdb,train
+5TMN,0PJ,0PJ,thermolysin,data/raw/5TMN.pdb,train
+1ICE,ASA,ASA,caspase-1,data/raw/1ICE.pdb,train
+1CSB,EP0,EP0,cathepsin B,data/raw/1CSB.pdb,train
+1MEM,0D6,0D6,cathepsin K,data/raw/1MEM.pdb,train
+2V0Z,C41,C41,renin,data/raw/2V0Z.pdb,train
+1VRT,NVP,NVP,HIV reverse transcriptase,data/raw/1VRT.pdb,train
+1FK9,EFZ,EFZ,HIV reverse transcriptase,data/raw/1FK9.pdb,train
+1C14,TCL,TCL,enoyl-ACP reductase,data/raw/1C14.pdb,train
+1P44,GEQ,GEQ,InhA,data/raw/1P44.pdb,train
+1KZN,CBN,CBN,DNA gyrase,data/raw/1KZN.pdb,train
+1CBS,REA,REA,CRABP,data/raw/1CBS.pdb,train
+1DB1,VDX,VDX,vitamin D receptor,data/raw/1DB1.pdb,train
+1FBY,9CR,9CR,RXR,data/raw/1FBY.pdb,train
+1A28,STR,STR,progesterone receptor,data/raw/1A28.pdb,train
+1M2Z,DEX,DEX,glucocorticoid receptor,data/raw/1M2Z.pdb,train
+1K7L,544,544,PPAR alpha,data/raw/1K7L.pdb,train
+1I7I,AZ2,AZ2,PPAR delta,data/raw/1I7I.pdb,train
+1P8D,CO1,CO1,LXR,data/raw/1P8D.pdb,train
+1OSV,CHC,CHC,FXR,data/raw/1OSV.pdb,train
+1FTN,GDP,GDP,RhoA,data/raw/1FTN.pdb,train
+1GP2,GDP,GDP,G protein alpha,data/raw/1GP2.pdb,train
+2YDO,ADN,ADN,adenosine A2A receptor,data/raw/2YDO.pdb,train
+3EML,ZMA,ZMA,adenosine A2A receptor,data/raw/3EML.pdb,train
+1OYN,ROL,ROL,PDE4,data/raw/1OYN.pdb,train
+1VID,DNC,DNC,COMT,data/raw/1VID.pdb,train
+1MMD,ADP,ADP,myosin,data/raw/1MMD.pdb,train
+4PFK,ADP,ADP,phosphofructokinase,data/raw/4PFK.pdb,train
+1A49,ATP,ATP,pyruvate kinase,data/raw/1A49.pdb,train
+1QHA,ANP,ANP,aspartate carbamoyltransferase,data/raw/1QHA.pdb,train
 1DV2,ATP,ATP,biotin carboxylase,data/raw/1DV2.pdb,test
 1KAX,ATP,ATP,Hsp70,data/raw/1KAX.pdb,test
 1BG2,ADP,ADP,kinesin,data/raw/1BG2.pdb,test
 1ECD,HEM,HEM,erythrocruorin,data/raw/1ECD.pdb,test
-1IEP,STI,STI,Abl kinase,data/raw/1IEP.pdb,test
-1M17,AQ4,AQ4,EGFR kinase,data/raw/1M17.pdb,test
 1IR3,ANP,ANP,insulin receptor kinase,data/raw/1IR3.pdb,test
+1M17,AQ4,AQ4,EGFR kinase,data/raw/1M17.pdb,test
+1IEP,STI,STI,Abl kinase,data/raw/1IEP.pdb,test
+1CX2,S58,S58,COX-2,data/raw/1CX2.pdb,test
+4DFR,MTX,MTX,dihydrofolate reductase,data/raw/4DFR.pdb,test
+1DWD,MID,MID,thrombin,data/raw/1DWD.pdb,test
+3HS4,AZM,AZM,carbonic anhydrase II,data/raw/3HS4.pdb,test
+2QWK,G39,G39,neuraminidase,data/raw/2QWK.pdb,test
+2PRG,BRL,BRL,PPAR gamma,data/raw/2PRG.pdb,test
+1O86,LPR,LPR,ACE,data/raw/1O86.pdb,test
+1X70,715,715,DPP-4,data/raw/1X70.pdb,test
+1UK0,FRM,FRM,PARP,data/raw/1UK0.pdb,test
+1W51,L01,L01,BACE,data/raw/1W51.pdb,test
+1C83,OAI,OAI,PTP1B,data/raw/1C83.pdb,test
+121P,GCP,GCP,H-Ras,data/raw/121P.pdb,test
+1F88,RET,RET,rhodopsin,data/raw/1F88.pdb,test
+1JFF,TA1,TA1,tubulin,data/raw/1JFF.pdb,test
+3EQM,ASD,ASD,aromatase,data/raw/3EQM.pdb,test
+2V5Z,SAG,SAG,monoamine oxidase B,data/raw/2V5Z.pdb,test
+1KSN,FXV,FXV,factor Xa,data/raw/1KSN.pdb,test
+1GFW,MSI,MSI,caspase-3,data/raw/1GFW.pdb,test
+1T64,TSN,TSN,HDAC,data/raw/1T64.pdb,test
+2AM9,TES,TES,androgen receptor,data/raw/2AM9.pdb,test
+1W0E,MET,MET,CYP3A4,data/raw/1W0E.pdb,test
+2RH1,CAU,CAU,beta2 adrenergic receptor,data/raw/2RH1.pdb,test
+3PTB,BEN,BEN,trypsin,data/raw/3PTB.pdb,test
+1HRC,HEC,HEC,cytochrome c,data/raw/1HRC.pdb,test
+2H42,VIA,VIA,PDE5,data/raw/2H42.pdb,test
+1QS4,100,100,HIV integrase,data/raw/1QS4.pdb,test
+2OC8,U5G,U5G,HCV protease,data/raw/2OC8.pdb,test

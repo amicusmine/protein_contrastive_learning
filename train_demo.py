@@ -79,8 +79,8 @@ def plot_similarity(similarity, ordered, test_items, path):
     labels = [f"{item['pdb_id']} {item['ligand_name']}" for item in ordered]
     test_labels = [f"{item['pdb_id']} {item['ligand_name']}" for item in test_items]
     n_train = len(ordered) - len(test_items)
-    fig_w = max(8.5, 0.46 * len(labels) + 2.4)
-    fig_h = 0.48 * len(test_labels) + 2.2
+    fig_w = max(8.5, 0.28 * len(labels) + 2.2)
+    fig_h = max(4.2, 0.32 * len(test_labels) + 1.8)
     fig, axis = plt.subplots(figsize=(fig_w, fig_h))
     image = axis.imshow(similarity, cmap="viridis", aspect="auto")
     axis.axvline(n_train - 0.5, color="white", lw=0.8)
@@ -89,20 +89,22 @@ def plot_similarity(similarity, ordered, test_items, path):
             Rectangle((n_train + row - 0.5, row - 0.5), 1, 1, fill=False, edgecolor="white", lw=1.6)
         )
     axis.set_xticks(np.arange(len(labels)))
-    axis.set_xticklabels(labels, rotation=55, ha="right", fontsize=8)
+    label_size = 6 if len(labels) > 40 else 8
+    axis.set_xticklabels(labels, rotation=90, ha="center", fontsize=label_size)
     axis.set_yticks(np.arange(len(test_labels)))
-    axis.set_yticklabels(test_labels, fontsize=8)
+    axis.set_yticklabels(test_labels, fontsize=label_size)
     axis.set_xlabel("Ligand")
     axis.set_ylabel("Held-out pocket")
     axis.set_title("Cosine similarity. The white box is the true ligand.")
     fig.colorbar(image, ax=axis, fraction=0.03, pad=0.02)
     fig.tight_layout()
-    fig.savefig(path, dpi=160)
+    fig.savefig(path, dpi=140)
     plt.close(fig)
 
 
 def plot_rmsd(rows, path):
-    fig, axis = plt.subplots(figsize=(9.2, 4.2))
+    fig_w = max(9.2, 0.24 * len(rows) + 1.8)
+    fig, axis = plt.subplots(figsize=(fig_w, 4.4))
     x = np.arange(len(rows))
     colors = ["#1f4e79" if row["split"] == "train" else "#c47b2b" for row in rows]
     axis.bar(x, [row["rmsd"] for row in rows], color=colors)
@@ -110,7 +112,10 @@ def plot_rmsd(rows, path):
     axis.axhline(test_mean, color="#c47b2b", ls="--", lw=1)
     axis.set_xticks(x)
     axis.set_xticklabels(
-        [f"{row['pdb_id']} {row['ligand']}" for row in rows], rotation=55, ha="right", fontsize=8
+        [f"{row['pdb_id']} {row['ligand']}" for row in rows],
+        rotation=90,
+        ha="center",
+        fontsize=7 if len(rows) > 30 else 8,
     )
     axis.set_ylabel("Kabsch RMSD (Å)")
     axis.set_title("Denoised ligand coordinates")
@@ -134,19 +139,31 @@ def plot_rmsd(rows, path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--retrieval-steps", type=int, default=800)
-    parser.add_argument("--generation-steps", type=int, default=800)
+    parser.add_argument("--generation-steps", type=int, default=0)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+    print(f"device: {device}")
     complexes = load_all()
     train = [item for item in complexes if item["split"] == "train"]
     test = [item for item in complexes if item["split"] == "test"]
     if not train or not test:
         raise RuntimeError("both a train split and a test split are required")
+    if args.generation_steps <= 0:
+        args.generation_steps = 12 * len(train)
+    print(
+        f"{len(train)} train complexes, {len(test)} test complexes, "
+        f"{args.generation_steps} denoising steps"
+    )
 
     retriever = PocketLigandRetriever().to(device)
     optimizer = torch.optim.Adam(retriever.parameters(), lr=args.lr)
