@@ -40,11 +40,13 @@ models/metrics.json
 
 This machine has an M3 Pro and no NVIDIA GPU. The run below used Metal (`mps`), seed 0, 800 retrieval steps, and 1080 denoising steps.
 
-On the 90 training ligands, exact top-1 is 12/90. A random guess among 90 ligands would be right about 1 time in 90.
+On the 90 training ligands, exact top-1 is 5/90. A random guess among 90 ligands would be right about 1 time in 90.
 
-On the 34 held-out pockets, exact top-1 inside the test gallery is 2/34. A random guess among 34 ligands would be right about 1 time in 34. Against all 124 ligands, the same-ligand top-1 is also 2/34. Those two are `1KAX`, whose top hit is `1DV2` ATP, and `1IR3`, whose top hit is `1QHA` ANP. The mean exact rank of a held-out ligand in the gallery of 124 is 52.
+On the 34 held-out pockets, exact top-1 inside the test gallery is 1/34. A random guess among 34 ligands would be right about 1 time in 34. Against all 124 ligands, the same-ligand top-1 is 2/34: `1C83` ranks its own ligand first, and `1KAX` ranks `1DV2` ATP first. The mean exact rank of a held-out ligand in the gallery of 124 is 50.
 
-Mean Kabsch RMSD is 4.61 Å on the training complexes and 4.39 Å on the held-out complexes.
+Mean Kabsch RMSD is 4.62 Å on the training complexes and 4.39 Å on the held-out complexes.
+
+In the loss figure, the pale line is the loss at each step. The dark line is a moving average: 25 steps for retrieval and 60 steps for coordinate denoising.
 
 ![Retrieval and denoising loss](figures/loss.png)
 
@@ -56,40 +58,40 @@ Mean Kabsch RMSD is 4.61 Å on the training complexes and 4.39 Å on the held-ou
 
 | PDB | Code | Protein | Rank in 124 | Top hit | RMSD (Å) |
 | --- | --- | --- | --- | --- | --- |
-| 1DV2 | ATP | biotin carboxylase | 3 | 5TMN 0PJ | 4.97 |
-| 1KAX | ATP | Hsp70 | 7 | 1DV2 ATP | 4.96 |
-| 1BG2 | ADP | kinesin | 21 | 1DV2 ATP | 4.08 |
-| 1ECD | HEM | erythrocruorin | 26 | 1Q41 IXM | 4.79 |
-| 1IR3 | ANP | insulin receptor kinase | 2 | 1QHA ANP | 4.48 |
-| 1M17 | AQ4 | EGFR kinase | 102 | 3PTB BEN | 5.25 |
-| 1IEP | STI | Abl kinase | 10 | 3PTB BEN | 6.72 |
-| 1CX2 | S58 | COX-2 | 118 | 1HDX NAD | 4.47 |
-| 4DFR | MTX | dihydrofolate reductase | 51 | 1A9U SB2 | 4.86 |
-| 1DWD | MID | thrombin | 37 | 1DV2 ATP | 4.45 |
-| 3HS4 | AZM | carbonic anhydrase II | 86 | 3PTB BEN | 3.07 |
-| 2QWK | G39 | neuraminidase | 30 | 1VID DNC | 3.18 |
-| 2PRG | BRL | PPAR gamma | 55 | 3PTB BEN | 4.83 |
-| 1O86 | LPR | ACE | 38 | 5TMN 0PJ | 4.61 |
-| 1X70 | 715 | DPP-4 | 29 | 5TMN 0PJ | 5.03 |
-| 1UK0 | FRM | PARP | 39 | 5TMN 0PJ | 5.05 |
-| 1W51 | L01 | BACE | 52 | 1DV2 ATP | 5.10 |
-| 1C83 | OAI | PTP1B | 3 | 1DV2 ATP | 3.47 |
-| 121P | GCP | H-Ras | 3 | 1DV2 ATP | 4.78 |
-| 1F88 | RET | rhodopsin | 66 | 1CSB EP0 | 4.30 |
-| 1JFF | TA1 | tubulin | 112 | 5TMN 0PJ | 5.12 |
-| 3EQM | ASD | aromatase | 30 | 3PTB BEN | 3.83 |
-| 2V5Z | SAG | monoamine oxidase B | 52 | 2PRG BRL | 4.76 |
-| 1KSN | FXV | factor Xa | 80 | 1DV2 ATP | 5.29 |
-| 1GFW | MSI | caspase-3 | 68 | 5TMN 0PJ | 4.09 |
-| 1T64 | TSN | HDAC | 117 | 1C83 OAI | 4.33 |
-| 2AM9 | TES | androgen receptor | 9 | 3ERT OHT | 3.50 |
-| 1W0E | MET | CYP3A4 | 124 | 2RFS AM8 | 2.14 |
-| 2RH1 | CAU | beta2 adrenergic receptor | 22 | 1CSB EP0 | 3.90 |
-| 3PTB | BEN | trypsin | 106 | 1C83 OAI | 1.71 |
-| 1HRC | HEC | cytochrome c | 28 | 2B7A IZA | 5.14 |
-| 2H42 | VIA | PDE5 | 79 | 1A9U SB2 | 4.38 |
-| 1QS4 | 100 | HIV integrase | 114 | 1IR3 ANP | 3.94 |
-| 2OC8 | U5G | HCV protease | 52 | 1C83 OAI | 4.63 |
+| 1DV2 | ATP | biotin carboxylase | 22 | 1C83 OAI | 5.04 |
+| 1KAX | ATP | Hsp70 | 9 | 1DV2 ATP | 4.94 |
+| 1BG2 | ADP | kinesin | 18 | 1DV2 ATP | 4.07 |
+| 1ECD | HEM | erythrocruorin | 10 | 1BMK SB5 | 4.81 |
+| 1IR3 | ANP | insulin receptor kinase | 21 | 1HDX NAD | 4.46 |
+| 1M17 | AQ4 | EGFR kinase | 47 | 3PTB BEN | 5.26 |
+| 1IEP | STI | Abl kinase | 34 | 2FGI PD1 | 6.72 |
+| 1CX2 | S58 | COX-2 | 112 | 1C14 TCL | 4.46 |
+| 4DFR | MTX | dihydrofolate reductase | 79 | 3ERT OHT | 4.83 |
+| 1DWD | MID | thrombin | 55 | 1DV2 ATP | 4.44 |
+| 3HS4 | AZM | carbonic anhydrase II | 92 | 3PTB BEN | 3.10 |
+| 2QWK | G39 | neuraminidase | 30 | 1QHA ANP | 3.19 |
+| 2PRG | BRL | PPAR gamma | 9 | 3PTB BEN | 4.80 |
+| 1O86 | LPR | ACE | 34 | 5TMN 0PJ | 4.64 |
+| 1X70 | 715 | DPP-4 | 28 | 1C83 OAI | 5.04 |
+| 1UK0 | FRM | PARP | 32 | 4TMN 0PK | 5.06 |
+| 1W51 | L01 | BACE | 56 | 1DV2 ATP | 5.11 |
+| 1C83 | OAI | PTP1B | 1 | 1C83 OAI | 3.47 |
+| 121P | GCP | H-Ras | 6 | 1HDX NAD | 4.81 |
+| 1F88 | RET | rhodopsin | 38 | 1W0E MET | 4.30 |
+| 1JFF | TA1 | tubulin | 107 | 2B7A IZA | 5.15 |
+| 3EQM | ASD | aromatase | 14 | 3EML ZMA | 3.83 |
+| 2V5Z | SAG | monoamine oxidase B | 53 | 1AH3 TOL | 4.76 |
+| 1KSN | FXV | factor Xa | 90 | 1ICE ASA | 5.27 |
+| 1GFW | MSI | caspase-3 | 70 | 1C83 OAI | 4.09 |
+| 1T64 | TSN | HDAC | 113 | 1C83 OAI | 4.33 |
+| 2AM9 | TES | androgen receptor | 15 | 1AH3 TOL | 3.46 |
+| 1W0E | MET | CYP3A4 | 87 | 3PTB BEN | 2.18 |
+| 2RH1 | CAU | beta2 adrenergic receptor | 34 | 1W0E MET | 3.87 |
+| 3PTB | BEN | trypsin | 115 | 1C83 OAI | 1.68 |
+| 1HRC | HEC | cytochrome c | 10 | 1A9U SB2 | 5.15 |
+| 2H42 | VIA | PDE5 | 85 | 1AH3 TOL | 4.35 |
+| 1QS4 | 100 | HIV integrase | 110 | 1IR3 ANP | 3.89 |
+| 2OC8 | U5G | HCV protease | 61 | 1W0E MET | 4.64 |
 
 The same rows are in `data/processed/heldout_results.csv`.
 

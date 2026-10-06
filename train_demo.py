@@ -59,15 +59,32 @@ def full_gallery_rows(test_pockets, all_ligands, ordered, test_items):
     return similarity.cpu().numpy(), rows
 
 
+def moving_mean(values, window):
+    values = np.asarray(values, dtype=float)
+    window = max(1, min(int(window), len(values)))
+    if window == 1:
+        return values
+    kernel = np.ones(window) / window
+    pad_left = window // 2
+    pad_right = window - 1 - pad_left
+    padded = np.pad(values, (pad_left, pad_right), mode="edge")
+    return np.convolve(padded, kernel, mode="valid")
+
+
 def plot_losses(retrieval_losses, generation_losses, path):
-    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.5))
-    axes[0].plot(np.arange(1, len(retrieval_losses) + 1), retrieval_losses, color="#1f4e79", lw=1.2)
-    axes[0].set_title("Retrieval")
-    axes[1].plot(np.arange(1, len(generation_losses) + 1), generation_losses, color="#b85c38", lw=1.2)
-    axes[1].set_title("Coordinate denoising")
-    for axis in axes:
+    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.6))
+    series = (
+        (retrieval_losses, "Retrieval", "#1f4e79", 25),
+        (generation_losses, "Coordinate denoising", "#b85c38", 60),
+    )
+    for axis, (values, title, color, window) in zip(axes, series):
+        steps = np.arange(1, len(values) + 1)
+        axis.plot(steps, values, color=color, lw=0.7, alpha=0.28)
+        axis.plot(steps, moving_mean(values, window), color=color, lw=1.8, label=f"{window}-step mean")
+        axis.set_title(title)
         axis.set_xlabel("Step")
         axis.set_ylabel("Loss")
+        axis.legend(frameon=False)
         axis.spines["top"].set_visible(False)
         axis.spines["right"].set_visible(False)
     fig.tight_layout()
