@@ -292,6 +292,7 @@ def ligand_graph(atoms, cutoff=2.2):
     return {
         "x": np.stack(features),
         "coords": coords - coords.mean(axis=0, keepdims=True),
+        "coords_abs": coords,
         "edge_index": _edges(coords, cutoff),
     }
 
@@ -305,12 +306,40 @@ def load_complex(pdb_id, ligand_name, save_dir=RAW_DIR):
     pocket = pocket_residues(structure, ligand)
     if len(pocket) < 8:
         raise ValueError(f"{pdb_id} pocket has only {len(pocket)} residues")
+    pocket_graph_ = pocket_graph(pocket)
+    ligand_graph_ = ligand_graph(ligand)
+    _put_in_pocket_frame(pocket_graph_, ligand_graph_)
     return {
         "pdb_id": pdb_id,
         "ligand_name": ligand_name,
-        "pocket": pocket_graph(pocket),
-        "ligand": ligand_graph(ligand),
+        "pocket": pocket_graph_,
+        "ligand": ligand_graph_,
     }
+
+
+def _put_in_pocket_frame(pocket, ligand):
+    """Express the pocket and the bound ligand in a frame fixed to the pocket."""
+    center, axes = _pocket_frame(pocket["coords"])
+    pocket["frame_coords"] = (pocket["coords"] - center) @ axes.T
+    ligand["bound_coords"] = (ligand["coords_abs"] - center) @ axes.T
+
+
+def _pocket_frame(coords):
+    center = coords.mean(axis=0)
+    centered = coords - center
+    _, _, vt = np.linalg.svd(centered, full_matrices=False)
+    first, second = vt[0], vt[1]
+    for index, axis in enumerate((first, second)):
+        projection = centered @ axis
+        skew = float(np.sum(projection ** 3))
+        if skew < 0 or (abs(skew) <= 1e-4 and projection[np.argmax(np.abs(projection))] < 0):
+            if index == 0:
+                first = -axis
+            else:
+                second = -axis
+    third = np.cross(first, second)
+    axes = np.stack([first, second, third]).astype(np.float32)
+    return center.astype(np.float32), axes
 
 
 def load_all(save_dir=RAW_DIR):

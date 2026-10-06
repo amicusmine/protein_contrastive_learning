@@ -1,9 +1,10 @@
 # Pocket contrastive learning
 
-A small PyTorch example of two tasks on public PDB complexes:
+This repository trains two small models on public protein–ligand complexes from the PDB.
 
-- contrastive retrieval, where a pocket embedding should rank its own ligand above the other ligands
-- pocket-conditioned denoising, where ligand coordinates are rebuilt from noise
+**Retrieval.** Each pocket and each ligand becomes one vector. Training pulls a pocket toward every ligand with the same residue name and away from the others. After training, a pocket ranks ligands by cosine similarity. The score is how often the top ligand has the right residue name.
+
+**Coordinate denoising.** Ligand atom coordinates are shifted by random noise. A second network reads the noisy coordinates and the pocket vector, and predicts the clean coordinates. The score is the RMSD after the two point clouds are aligned.
 
 The set has 124 complexes. Ninety fit the models. Thirty-four are held out by protein: a test PDB never appears in a training step. Ligand residue names were read from the deposited PDB files. Where one protein has several entries, those entries stay in the same split.
 
@@ -26,29 +27,46 @@ Pocket nodes are a 21-way amino-acid encoding plus hydrophobicity, charge, polar
 
 ## Models
 
-Each encoder is a two-layer mean-aggregation network with a 64-dimensional L2-normalized readout. Retrieval uses symmetric InfoNCE at temperature 0.07. Gradients are clipped at 1.0. Each retrieval step uses the full training set as one batch.
+Each encoder is a two-layer mean-aggregation network. A node carries its label plus its number of neighbors. An edge carries a distance basis. Pocket Cα edges use distances up to 10 Å, and ligand edges use distances up to 2.2 Å. The graph vector is the mean node, the max node, the log of the number of nodes, and a 16-bin histogram of pairwise distances, then L2-normalized to 64 dimensions.
+
+Retrieval uses a symmetric multi-positive InfoNCE loss at temperature 0.07. Every ligand with the same residue name is a positive, so a second ATP crystal is not a negative. Gradients are clipped at 1.0. Each retrieval step uses the full training set as one batch.
+
+An earlier version averaged the labels and ignored distances and atom counts, and it treated every crystal as its own class. Different ligands then collapsed to similar vectors, and copies of ATP were pushed apart. That run did not fit the 90 training pairs.
+
+`rigid_matcher.py` trains a rigid placement. The pocket and the ligand are each written in a local frame. A network predicts one rotation and one translation and applies that motion to the ligand, leaving its internal geometry unchanged. A second network scores the contacts of the placed ligand. Positives again share a residue name. The pose is trained for 100 epochs and the score for 240.
 
 The denoiser is an MLP. Its input is the ligand element, the noisy coordinates, the noise scale in angstroms, and the frozen pocket vector. It predicts the clean coordinates. Training adds `Uniform(0.1, 2.0)` Å of noise. Sampling starts from random coordinates and replaces them at 2.0, 1.0, 0.5, and 0.2 Å. The reported error is a Kabsch RMSD after centering both point clouds.
 
 ```
 models/retriever.pt
 models/denoiser.pt
+models/rigid.pt
 models/metrics.json
 ```
 
-## One Apple GPU run
+## Results
 
-This machine has an M3 Pro and no NVIDIA GPU. The run below used Metal (`mps`), seed 0, 800 retrieval steps, and 1080 denoising steps.
+The contrastive numbers use seed 0, 800 retrieval steps, and 1080 denoising steps. The rigid numbers use the same split, with 100 pose epochs and 240 score epochs. The training script uses CUDA when it is available, then Apple Metal, then CPU.
 
-On the 90 training ligands, exact top-1 is 5/90. A random guess among 90 ligands would be right about 1 time in 90.
+On the 90 training complexes, contrastive retrieval ranks a ligand with the right residue name first for 87/90 pockets. The exact crystal is first for 63/90. Several training ligands share a residue name, so those two counts differ. A random top hit would match the residue name about 2 times in 90, and the exact crystal about 1 time in 90.
 
-On the 34 held-out pockets, exact top-1 inside the test gallery is 1/34. A random guess among 34 ligands would be right about 1 time in 34. Against all 124 ligands, the same-ligand top-1 is 2/34: `1C83` ranks its own ligand first, and `1KAX` ranks `1DV2` ATP first. The mean exact rank of a held-out ligand in the gallery of 124 is 50.
+On the 34 held-out pockets, exact top-1 inside the test gallery is 3/34. A random guess among those 34 ligands would be right about 1 time in 34. Against all 124 ligands, the same-ligand top-1 is 3/34. `1IEP` (Abl, STI) ranks the training imatinib `1XBB` first. `1X70` and `1QS4` rank their own crystals first. The mean exact rank in the gallery of 124 is 50. A random rank would average about 62.
 
-Mean Kabsch RMSD is 4.62 Å on the training complexes and 4.39 Å on the held-out complexes.
+On the 90 training complexes, the trained rigid model places the true ligand at a mean RMSD of 0.83 Å. It ranks a ligand with the right residue name first for 77/90 pockets, and the exact crystal first for 59/90.
+
+On the 34 held-out pockets, rigid exact top-1 inside the test gallery is 2/34. Against all 124 ligands, the same-ligand top-1 is 1/34: `1C83` ranks its own ligand first. The mean exact rank is 56. The mean placement RMSD on these held-out ligands is 6.67 Å.
+
+Contrastive retrieval fits more of the training names (87/90) and ranks 3/34 held-out pockets by the right residue name, with mean exact rank 50. The rigid model is the one that recovers training poses.
+
+Mean Kabsch RMSD of the denoiser is 4.60 Å on the training complexes and 4.38 Å on the held-out complexes.
 
 In the loss figure, the pale line is the loss at each step. The dark line is a moving average: 25 steps for retrieval and 60 steps for coordinate denoising.
 
 ![Retrieval and denoising loss](figures/loss.png)
+
+![Contrastive retrieval against rigid-body fit](figures/retrieval_comparison.png)
+
+![Rigid placement RMSD](figures/rigid_rmsd.png)
 
 ![Held-out pockets against every ligand](figures/retrieval_similarity.png)
 
@@ -56,42 +74,44 @@ In the loss figure, the pale line is the loss at each step. The dark line is a m
 
 ### Held-out complexes
 
-| PDB | Code | Protein | Rank in 124 | Top hit | RMSD (Å) |
-| --- | --- | --- | --- | --- | --- |
-| 1DV2 | ATP | biotin carboxylase | 22 | 1C83 OAI | 5.04 |
-| 1KAX | ATP | Hsp70 | 9 | 1DV2 ATP | 4.94 |
-| 1BG2 | ADP | kinesin | 18 | 1DV2 ATP | 4.07 |
-| 1ECD | HEM | erythrocruorin | 10 | 1BMK SB5 | 4.81 |
-| 1IR3 | ANP | insulin receptor kinase | 21 | 1HDX NAD | 4.46 |
-| 1M17 | AQ4 | EGFR kinase | 47 | 3PTB BEN | 5.26 |
-| 1IEP | STI | Abl kinase | 34 | 2FGI PD1 | 6.72 |
-| 1CX2 | S58 | COX-2 | 112 | 1C14 TCL | 4.46 |
-| 4DFR | MTX | dihydrofolate reductase | 79 | 3ERT OHT | 4.83 |
-| 1DWD | MID | thrombin | 55 | 1DV2 ATP | 4.44 |
-| 3HS4 | AZM | carbonic anhydrase II | 92 | 3PTB BEN | 3.10 |
-| 2QWK | G39 | neuraminidase | 30 | 1QHA ANP | 3.19 |
-| 2PRG | BRL | PPAR gamma | 9 | 3PTB BEN | 4.80 |
-| 1O86 | LPR | ACE | 34 | 5TMN 0PJ | 4.64 |
-| 1X70 | 715 | DPP-4 | 28 | 1C83 OAI | 5.04 |
-| 1UK0 | FRM | PARP | 32 | 4TMN 0PK | 5.06 |
-| 1W51 | L01 | BACE | 56 | 1DV2 ATP | 5.11 |
-| 1C83 | OAI | PTP1B | 1 | 1C83 OAI | 3.47 |
-| 121P | GCP | H-Ras | 6 | 1HDX NAD | 4.81 |
-| 1F88 | RET | rhodopsin | 38 | 1W0E MET | 4.30 |
-| 1JFF | TA1 | tubulin | 107 | 2B7A IZA | 5.15 |
-| 3EQM | ASD | aromatase | 14 | 3EML ZMA | 3.83 |
-| 2V5Z | SAG | monoamine oxidase B | 53 | 1AH3 TOL | 4.76 |
-| 1KSN | FXV | factor Xa | 90 | 1ICE ASA | 5.27 |
-| 1GFW | MSI | caspase-3 | 70 | 1C83 OAI | 4.09 |
-| 1T64 | TSN | HDAC | 113 | 1C83 OAI | 4.33 |
-| 2AM9 | TES | androgen receptor | 15 | 1AH3 TOL | 3.46 |
-| 1W0E | MET | CYP3A4 | 87 | 3PTB BEN | 2.18 |
-| 2RH1 | CAU | beta2 adrenergic receptor | 34 | 1W0E MET | 3.87 |
-| 3PTB | BEN | trypsin | 115 | 1C83 OAI | 1.68 |
-| 1HRC | HEC | cytochrome c | 10 | 1A9U SB2 | 5.15 |
-| 2H42 | VIA | PDE5 | 85 | 1AH3 TOL | 4.35 |
-| 1QS4 | 100 | HIV integrase | 110 | 1IR3 ANP | 3.89 |
-| 2OC8 | U5G | HCV protease | 61 | 1W0E MET | 4.64 |
+Ranks are positions in the gallery of 124. Lower is better.
+
+| PDB | Code | Protein | Contrastive rank | Contrastive top | Rigid rank | Rigid top | Rigid RMSD (Å) | Denoiser RMSD (Å) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1DV2 | ATP | biotin carboxylase | 16 | 1MBN HEM | 33 | 2C6O 4SP | 8.86 | 4.68 |
+| 1KAX | ATP | Hsp70 | 8 | 1GP2 GDP | 57 | 1O6K ANP | 3.45 | 4.98 |
+| 1BG2 | ADP | kinesin | 9 | 121P GCP | 9 | 1DV2 ATP | 9.38 | 3.98 |
+| 1ECD | HEM | erythrocruorin | 50 | 1I7I AZ2 | 104 | 1O86 LPR | 7.30 | 4.87 |
+| 1IR3 | ANP | insulin receptor kinase | 29 | 1DB1 VDX | 55 | 2RFS AM8 | 8.78 | 4.53 |
+| 1M17 | AQ4 | EGFR kinase | 56 | 1Y6A AAZ | 90 | 1AGW SU2 | 8.49 | 5.26 |
+| 1IEP | STI | Abl kinase | 6 | 1XBB STI | 38 | 1QS4 100 | 2.99 | 6.73 |
+| 1CX2 | S58 | COX-2 | 93 | 1F88 RET | 102 | 1BYQ ADP | 7.63 | 4.45 |
+| 4DFR | MTX | dihydrofolate reductase | 116 | 1OYN ROL | 96 | 1OYN ROL | 7.99 | 4.96 |
+| 1DWD | MID | thrombin | 103 | 1CSB EP0 | 33 | 2YDO ADN | 7.27 | 4.42 |
+| 3HS4 | AZM | carbonic anhydrase II | 75 | 1HRC HEC | 74 | 1ICE ASA | 5.32 | 2.96 |
+| 2QWK | G39 | neuraminidase | 44 | 5TMN 0PJ | 57 | 1FTN GDP | 5.59 | 3.18 |
+| 2PRG | BRL | PPAR gamma | 16 | 1I7I AZ2 | 7 | 1UWH BAX | 8.70 | 4.76 |
+| 1O86 | LPR | ACE | 97 | 1XWS BI1 | 99 | 1CKP PVB | 7.08 | 4.67 |
+| 1X70 | 715 | DPP-4 | 1 | 1X70 715 | 100 | 1A49 ATP | 10.02 | 5.09 |
+| 1UK0 | FRM | PARP | 66 | 1CX2 S58 | 121 | 1ICE ASA | 4.12 | 5.06 |
+| 1W51 | L01 | BACE | 25 | 1I10 NAI | 111 | 1MMD ADP | 9.50 | 5.26 |
+| 1C83 | OAI | PTP1B | 7 | 2RH1 CAU | 1 | 1C83 OAI | 2.38 | 3.42 |
+| 121P | GCP | H-Ras | 7 | 1GP2 GDP | 14 | 2SRC ANP | 10.38 | 4.81 |
+| 1F88 | RET | rhodopsin | 80 | 1FBY 9CR | 83 | 1PY5 PY1 | 8.24 | 4.21 |
+| 1JFF | TA1 | tubulin | 14 | 1KZN CBN | 104 | 1C14 TCL | 6.06 | 5.21 |
+| 3EQM | ASD | aromatase | 75 | 4DFR MTX | 29 | 1HHO HEM | 6.26 | 3.64 |
+| 2V5Z | SAG | monoamine oxidase B | 74 | 1ERE EST | 2 | 1W0E MET | 2.86 | 4.85 |
+| 1KSN | FXV | factor Xa | 120 | 1X70 715 | 57 | 1AKE AP5 | 5.60 | 5.37 |
+| 1GFW | MSI | caspase-3 | 79 | 1PGG IMM | 83 | 1VID DNC | 7.68 | 4.16 |
+| 1T64 | TSN | HDAC | 29 | 1W0E MET | 40 | 2QWK G39 | 7.81 | 4.36 |
+| 2AM9 | TES | androgen receptor | 6 | 3EML ZMA | 96 | 1IEP STI | 3.91 | 3.44 |
+| 1W0E | MET | CYP3A4 | 10 | 1EL3 I84 | 4 | 1ZIN AP5 | 5.36 | 1.92 |
+| 2RH1 | CAU | beta2 adrenergic receptor | 104 | 3EML ZMA | 14 | 2B7A IZA | 5.62 | 3.98 |
+| 3PTB | BEN | trypsin | 12 | 1CSB EP0 | 27 | 1VID DNC | 4.61 | 1.85 |
+| 1HRC | HEC | cytochrome c | 104 | 1ERR RAL | 20 | 1FK9 EFZ | 6.82 | 5.09 |
+| 2H42 | VIA | PDE5 | 91 | 1KSN FXV | 67 | 2QWK G39 | 5.37 | 4.52 |
+| 1QS4 | 100 | HIV integrase | 1 | 1QS4 100 | 31 | 1VID DNC | 6.30 | 3.83 |
+| 2OC8 | U5G | HCV protease | 93 | 2B7A IZA | 57 | 1CKP PVB | 9.17 | 4.49 |
 
 The same rows are in `data/processed/heldout_results.csv`.
 
@@ -204,4 +224,4 @@ python evaluate.py --checkpoint checkpoints/best_model.pt
 
 ## Scope
 
-The code in this repository trains only on the public structures listed above. The training top-1 shows a weak fit to those 90 pairs. The held-out top-1 stays close to a random guess among the test ligands. The RMSD near 4.4 Å is the coordinate error of this denoiser.
+The code in this repository trains only on the public structures listed above. Contrastive retrieval fits the training residue names. The rigid model fits the training poses, with mean RMSD 0.83 Å, and ranks the training residue name first for 77/90 pockets. Held-out placement stays near 6.7 Å, and held-out ranking stays close to a random guess for both methods. The RMSD near 4.4 Å is the coordinate error of the denoiser.

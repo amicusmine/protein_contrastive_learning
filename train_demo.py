@@ -22,41 +22,62 @@ from retrieval_and_generation import (
     retrieval_batch,
     sample_coords,
 )
+from rigid_matcher import (
+    RigidMatcher,
+    pack_complex,
+    prepare_geometry,
+    rigid_score_matrix,
+    train_pose,
+    train_score,
+    true_ligand_rmsd,
+)
 from structures import load_all
 
 FIGURES = Path("figures")
 MODELS = Path("models")
 
 
-def exact_top1(pocket_emb, ligand_emb):
-    similarity = pocket_emb @ ligand_emb.T
-    top = similarity.argmax(dim=1)
-    hits = top == torch.arange(top.shape[0], device=top.device)
-    return float(hits.float().mean())
-
-
-def full_gallery_rows(test_pockets, all_ligands, ordered, test_items):
-    similarity = test_pockets @ all_ligands.T
-    order = similarity.argsort(dim=1, descending=True)
-    n_train = len(ordered) - len(test_items)
-    rows = []
-    for i, item in enumerate(test_items):
-        true_index = n_train + i
-        rank = int((order[i] == true_index).nonzero()[0]) + 1
+def retrieval_metrics(scores, queries, gallery):
+    scores = np.asarray(scores, dtype=float)
+    order = np.argsort(-scores, axis=1)
+    ids = [item["pdb_id"] for item in gallery]
+    names = [item["ligand_name"] for item in gallery]
+    exact_hit, same_hit, ranks, rows = [], [], [], []
+    for i, item in enumerate(queries):
+        exact_index = ids.index(item["pdb_id"])
+        rank = int(np.where(order[i] == exact_index)[0][0]) + 1
         top = int(order[i, 0])
-        guess = ordered[top]
+        guess = gallery[top]
+        exact_hit.append(rank == 1)
+        same_hit.append(names[top] == item["ligand_name"])
+        ranks.append(rank)
         rows.append(
             {
                 "pdb_id": item["pdb_id"],
                 "ligand": item["ligand_name"],
                 "protein": item["title"],
                 "exact_rank": rank,
-                "gallery_size": len(ordered),
+                "gallery_size": len(gallery),
                 "top_hit": f"{guess['pdb_id']} {guess['ligand_name']}",
-                "same_ligand": guess["ligand_name"] == item["ligand_name"],
+                "same_ligand": names[top] == item["ligand_name"],
             }
         )
-    return similarity.cpu().numpy(), rows
+    return {
+        "exact_top1": float(np.mean(exact_hit)) if exact_hit else 0.0,
+        "same_ligand_top1": float(np.mean(same_hit)) if same_hit else 0.0,
+        "mean_exact_rank": float(np.mean(ranks)) if ranks else 0.0,
+        "n_exact": int(np.sum(exact_hit)),
+        "n_same": int(np.sum(same_hit)),
+        "n": len(queries),
+        "rows": rows,
+    }
+
+
+def chance_same_ligand(queries, gallery):
+    names = [item["ligand_name"] for item in gallery]
+    if not names:
+        return 0.0
+    return float(np.mean([names.count(item["ligand_name"]) / len(names) for item in queries]))
 
 
 def moving_mean(values, window):
@@ -119,7 +140,28 @@ def plot_similarity(similarity, ordered, test_items, path):
     plt.close(fig)
 
 
-def plot_rmsd(rows, path):
+def plot_comparison(learned, rigid, chance, path):
+    labels = ["Train exact", "Train same ligand", "Held-out exact", "Held-out same ligand"]
+    x = np.arange(len(labels))
+    width = 0.36
+    fig, axis = plt.subplots(figsize=(8.2, 4.0))
+    axis.bar(x - width / 2, learned, width, color="#1f4e79", label="Contrastive")
+    axis.bar(x + width / 2, rigid, width, color="#c47b2b", label="Rigid-body fit")
+    axis.scatter(x, chance, color="black", s=28, zorder=3, label="Random")
+    axis.set_xticks(x)
+    axis.set_xticklabels(labels)
+    axis.set_ylim(0, 1)
+    axis.set_ylabel("Top-1")
+    axis.set_title("Retrieval against the same galleries")
+    axis.legend(frameon=False, loc="upper right")
+    axis.spines["top"].set_visible(False)
+    axis.spines["right"].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(path, dpi=160)
+    plt.close(fig)
+
+
+def plot_rmsd(rows, path, title="Denoised ligand coordinates"):
     fig_w = max(9.2, 0.24 * len(rows) + 1.8)
     fig, axis = plt.subplots(figsize=(fig_w, 4.4))
     x = np.arange(len(rows))
@@ -135,7 +177,7 @@ def plot_rmsd(rows, path):
         fontsize=7 if len(rows) > 30 else 8,
     )
     axis.set_ylabel("Kabsch RMSD (Å)")
-    axis.set_title("Denoised ligand coordinates")
+    axis.set_title(title)
     axis.legend(
         handles=[
             Patch(facecolor="#1f4e79", label="train"),
@@ -159,6 +201,8 @@ def main():
     parser.add_argument("--generation-steps", type=int, default=0)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--rigid-epochs", type=int, default=100)
+    parser.add_argument("--rigid-score-epochs", type=int, default=240)
     args = parser.parse_args()
 
     torch.manual_seed(args.seed)
@@ -181,6 +225,40 @@ def main():
         f"{len(train)} train complexes, {len(test)} test complexes, "
         f"{args.generation_steps} denoising steps"
     )
+    ordered = train + test
+    n_train = len(train)
+    train_names = [item["ligand_name"] for item in train]
+    prepare_geometry(complexes)
+    train_packed = [pack_complex(item, device) for item in train]
+    test_packed = [pack_complex(item, device) for item in test]
+    ordered_packed = train_packed + test_packed
+    rigid = RigidMatcher().to(device)
+    train_pose(
+        rigid,
+        train_packed,
+        epochs=args.rigid_epochs,
+        lr=1e-3,
+        test_packed=test_packed,
+    )
+    train_score(rigid, train_packed, train_names, epochs=args.rigid_score_epochs, lr=3e-3)
+    rigid_scores = rigid_score_matrix(rigid, ordered_packed, ordered_packed)
+    rigid_pose = true_ligand_rmsd(rigid, ordered_packed)
+    rigid_train = retrieval_metrics(rigid_scores[:n_train, :n_train], train, train)
+    rigid_test_gallery = retrieval_metrics(rigid_scores[n_train:, n_train:], test, test)
+    rigid_full = retrieval_metrics(rigid_scores[n_train:], test, ordered)
+    print(
+        "rigid train exact "
+        f"{rigid_train['n_exact']}/{rigid_train['n']}, "
+        f"same ligand {rigid_train['n_same']}/{rigid_train['n']}"
+    )
+    print(
+        "rigid held-out exact "
+        f"{rigid_test_gallery['n_exact']}/{rigid_test_gallery['n']}, "
+        f"same ligand in full gallery {rigid_full['n_same']}/{rigid_full['n']}, "
+        f"mean rank {rigid_full['mean_exact_rank']:.1f}, "
+        f"pose RMSD train {float(np.mean(rigid_pose[:n_train])):.2f} A, "
+        f"test {float(np.mean(rigid_pose[n_train:])):.2f} A"
+    )
 
     retriever = PocketLigandRetriever().to(device)
     optimizer = torch.optim.Adam(retriever.parameters(), lr=args.lr)
@@ -188,7 +266,7 @@ def main():
     for step in range(1, args.retrieval_steps + 1):
         optimizer.zero_grad()
         pockets, ligands = retrieval_batch(retriever, train, device)
-        loss = retriever.loss(pockets, ligands)
+        loss = retriever.loss(pockets, ligands, train_names)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(retriever.parameters(), 1.0)
         optimizer.step()
@@ -197,24 +275,29 @@ def main():
             print(f"retrieval step {step}: loss {loss.item():.4f}")
 
     retriever.eval()
-    ordered = train + test
     with torch.no_grad():
         all_pockets, all_ligands = retrieval_batch(retriever, ordered, device)
-    n_train = len(train)
-    train_top1 = exact_top1(all_pockets[:n_train], all_ligands[:n_train])
-    test_gallery_top1 = exact_top1(all_pockets[n_train:], all_ligands[n_train:])
-    similarity, test_rows = full_gallery_rows(
-        all_pockets[n_train:], all_ligands, ordered, test
+    similarity = (all_pockets @ all_ligands.T).cpu().numpy()
+    learned_train = retrieval_metrics(similarity[:n_train, :n_train], train, train)
+    learned_test_gallery = retrieval_metrics(similarity[n_train:, n_train:], test, test)
+    learned_full = retrieval_metrics(similarity[n_train:], test, ordered)
+    print(
+        "contrastive train exact "
+        f"{learned_train['n_exact']}/{learned_train['n']}, "
+        f"same ligand {learned_train['n_same']}/{learned_train['n']}"
     )
-    same_ligand_top1 = float(np.mean([row["same_ligand"] for row in test_rows]))
-    print(f"train exact top-1, train ligands only: {train_top1:.2f}")
-    print(f"test exact top-1, test ligands only: {test_gallery_top1:.2f}")
-    print(f"test same-ligand top-1, all ligands: {same_ligand_top1:.2f}")
-    for row in test_rows:
+    print(
+        "contrastive held-out exact "
+        f"{learned_test_gallery['n_exact']}/{learned_test_gallery['n']}, "
+        f"same ligand in full gallery {learned_full['n_same']}/{learned_full['n']}, "
+        f"mean rank {learned_full['mean_exact_rank']:.1f}"
+    )
+    for learned_row, rigid_row in zip(learned_full["rows"], rigid_full["rows"]):
         print(
-            f"{row['pdb_id']} {row['ligand']}: "
-            f"exact rank {row['exact_rank']}/{row['gallery_size']}, "
-            f"top hit {row['top_hit']}"
+            f"{learned_row['pdb_id']} {learned_row['ligand']}: "
+            f"contrastive rank {learned_row['exact_rank']}/{learned_row['gallery_size']} "
+            f"top {learned_row['top_hit']}; "
+            f"rigid rank {rigid_row['exact_rank']} top {rigid_row['top_hit']}"
         )
 
     denoiser = CoordinateDenoiser().to(device)
@@ -253,8 +336,57 @@ def main():
     FIGURES.mkdir(exist_ok=True)
     MODELS.mkdir(exist_ok=True)
     Path("data/processed").mkdir(parents=True, exist_ok=True)
+    chance = [
+        1 / len(train),
+        chance_same_ligand(train, train),
+        1 / len(test),
+        chance_same_ligand(test, ordered),
+    ]
+    learned_rates = [
+        learned_train["exact_top1"],
+        learned_train["same_ligand_top1"],
+        learned_test_gallery["exact_top1"],
+        learned_full["same_ligand_top1"],
+    ]
+    rigid_rates = [
+        rigid_train["exact_top1"],
+        rigid_train["same_ligand_top1"],
+        rigid_test_gallery["exact_top1"],
+        rigid_full["same_ligand_top1"],
+    ]
+    rigid_pose_by_id = {item["pdb_id"]: float(value) for item, value in zip(ordered, rigid_pose)}
+    rmsd_by_id = {row["pdb_id"]: row["rmsd"] for row in rmsd_rows}
+    heldout_rows = []
+    for learned_row, rigid_row in zip(learned_full["rows"], rigid_full["rows"]):
+        heldout_rows.append(
+            {
+                "pdb_id": learned_row["pdb_id"],
+                "ligand": learned_row["ligand"],
+                "protein": learned_row["protein"],
+                "contrastive_rank": learned_row["exact_rank"],
+                "contrastive_top_hit": learned_row["top_hit"],
+                "contrastive_same_ligand": learned_row["same_ligand"],
+                "rigid_rank": rigid_row["exact_rank"],
+                "rigid_top_hit": rigid_row["top_hit"],
+                "rigid_same_ligand": rigid_row["same_ligand"],
+                "gallery_size": learned_row["gallery_size"],
+                "rigid_rmsd": f"{rigid_pose_by_id[learned_row['pdb_id']]:.2f}",
+                "rmsd": f"{rmsd_by_id[learned_row['pdb_id']]:.2f}",
+            }
+        )
+    rigid_rmsd_rows = [
+        {
+            "pdb_id": item["pdb_id"],
+            "ligand": item["ligand_name"],
+            "split": item["split"],
+            "rmsd": float(value),
+        }
+        for item, value in zip(ordered, rigid_pose)
+    ]
     plot_losses(retrieval_losses, generation_losses, FIGURES / "loss.png")
-    plot_similarity(similarity, ordered, test, FIGURES / "retrieval_similarity.png")
+    plot_similarity(similarity[n_train:], ordered, test, FIGURES / "retrieval_similarity.png")
+    plot_comparison(learned_rates, rigid_rates, chance, FIGURES / "retrieval_comparison.png")
+    plot_rmsd(rigid_rmsd_rows, FIGURES / "rigid_rmsd.png", title="Rigid placement of the true ligand")
     plot_rmsd(rmsd_rows, FIGURES / "denoising_rmsd.png")
 
     torch.save(
@@ -267,6 +399,7 @@ def main():
             "seed": args.seed,
             "retrieval_steps": args.retrieval_steps,
             "lr": args.lr,
+            "positives": "same residue name",
         },
         MODELS / "retriever.pt",
     )
@@ -281,6 +414,15 @@ def main():
         },
         MODELS / "denoiser.pt",
     )
+    torch.save(
+        {
+            "state_dict": rigid.state_dict(),
+            "seed": args.seed,
+            "pose_epochs": args.rigid_epochs,
+            "score_epochs": args.rigid_score_epochs,
+        },
+        MODELS / "rigid.pt",
+    )
 
     metrics = {
         "seed": args.seed,
@@ -288,22 +430,41 @@ def main():
         "generation_steps": args.generation_steps,
         "lr": args.lr,
         "device": str(device),
-        "train_exact_top1": train_top1,
-        "test_exact_top1_in_test_gallery": test_gallery_top1,
-        "test_same_ligand_top1_in_full_gallery": same_ligand_top1,
+        "positives": "same residue name",
+        "contrastive": {
+            "train_exact_top1": learned_train["exact_top1"],
+            "train_same_ligand_top1": learned_train["same_ligand_top1"],
+            "test_exact_top1_in_test_gallery": learned_test_gallery["exact_top1"],
+            "test_same_ligand_top1_in_full_gallery": learned_full["same_ligand_top1"],
+            "test_mean_exact_rank": learned_full["mean_exact_rank"],
+        },
+        "rigid": {
+            "train_exact_top1": rigid_train["exact_top1"],
+            "train_same_ligand_top1": rigid_train["same_ligand_top1"],
+            "test_exact_top1_in_test_gallery": rigid_test_gallery["exact_top1"],
+            "test_same_ligand_top1_in_full_gallery": rigid_full["same_ligand_top1"],
+            "test_mean_exact_rank": rigid_full["mean_exact_rank"],
+            "pose_epochs": args.rigid_epochs,
+            "score_epochs": args.rigid_score_epochs,
+            "mean_pose_rmsd_train": float(np.mean(rigid_pose[:n_train])),
+            "mean_pose_rmsd_test": float(np.mean(rigid_pose[n_train:])),
+        },
+        "chance": {
+            "train_exact": chance[0],
+            "train_same_ligand": chance[1],
+            "test_exact": chance[2],
+            "test_same_ligand_full_gallery": chance[3],
+        },
         "mean_rmsd_train": train_rmsd,
         "mean_rmsd_test": test_rmsd,
-        "test_retrieval": test_rows,
+        "test_retrieval": heldout_rows,
         "rmsd": rmsd_rows,
     }
     (MODELS / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
     with (Path("data/processed") / "heldout_results.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(
-            handle,
-            fieldnames=["pdb_id", "ligand", "protein", "exact_rank", "gallery_size", "top_hit", "same_ligand"],
-        )
+        writer = csv.DictWriter(handle, fieldnames=list(heldout_rows[0].keys()))
         writer.writeheader()
-        writer.writerows(test_rows)
+        writer.writerows(heldout_rows)
     print(f"wrote {FIGURES} and {MODELS}")
 
 

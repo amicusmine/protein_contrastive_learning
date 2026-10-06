@@ -4,317 +4,509 @@
   "generation_steps": 1080,
   "lr": 0.0003,
   "device": "mps",
-  "train_exact_top1": 0.0555555559694767,
-  "test_exact_top1_in_test_gallery": 0.029411764815449715,
-  "test_same_ligand_top1_in_full_gallery": 0.058823529411764705,
-  "mean_rmsd_train": 4.620064706272549,
-  "mean_rmsd_test": 4.388511724331799,
+  "positives": "same residue name",
+  "contrastive": {
+    "train_exact_top1": 0.7,
+    "train_same_ligand_top1": 0.9666666666666667,
+    "test_exact_top1_in_test_gallery": 0.08823529411764706,
+    "test_same_ligand_top1_in_full_gallery": 0.08823529411764706,
+    "test_mean_exact_rank": 50.470588235294116
+  },
+  "rigid": {
+    "train_exact_top1": 0.6555555555555556,
+    "train_same_ligand_top1": 0.8555555555555555,
+    "test_exact_top1_in_test_gallery": 0.058823529411764705,
+    "test_same_ligand_top1_in_full_gallery": 0.029411764705882353,
+    "test_mean_exact_rank": 56.3235294117647,
+    "pose_epochs": 100,
+    "score_epochs": 240,
+    "mean_pose_rmsd_train": 0.8346335767043962,
+    "mean_pose_rmsd_test": 6.674045296276317
+  },
+  "chance": {
+    "train_exact": 0.011111111111111112,
+    "train_same_ligand": 0.02296296296296296,
+    "test_exact": 0.029411764705882353,
+    "test_same_ligand_full_gallery": 0.014705882352941175
+  },
+  "mean_rmsd_train": 4.603192199601067,
+  "mean_rmsd_test": 4.3821589105269485,
   "test_retrieval": [
     {
       "pdb_id": "1DV2",
       "ligand": "ATP",
       "protein": "biotin carboxylase",
-      "exact_rank": 22,
+      "contrastive_rank": 16,
+      "contrastive_top_hit": "1MBN HEM",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 33,
+      "rigid_top_hit": "2C6O 4SP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": false
+      "rigid_rmsd": "8.86",
+      "rmsd": "4.68"
     },
     {
       "pdb_id": "1KAX",
       "ligand": "ATP",
       "protein": "Hsp70",
-      "exact_rank": 9,
+      "contrastive_rank": 8,
+      "contrastive_top_hit": "1GP2 GDP",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 57,
+      "rigid_top_hit": "1O6K ANP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1DV2 ATP",
-      "same_ligand": true
+      "rigid_rmsd": "3.45",
+      "rmsd": "4.98"
     },
     {
       "pdb_id": "1BG2",
       "ligand": "ADP",
       "protein": "kinesin",
-      "exact_rank": 18,
+      "contrastive_rank": 9,
+      "contrastive_top_hit": "121P GCP",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 9,
+      "rigid_top_hit": "1DV2 ATP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1DV2 ATP",
-      "same_ligand": false
+      "rigid_rmsd": "9.38",
+      "rmsd": "3.98"
     },
     {
       "pdb_id": "1ECD",
       "ligand": "HEM",
       "protein": "erythrocruorin",
-      "exact_rank": 10,
+      "contrastive_rank": 50,
+      "contrastive_top_hit": "1I7I AZ2",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 104,
+      "rigid_top_hit": "1O86 LPR",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1BMK SB5",
-      "same_ligand": false
+      "rigid_rmsd": "7.30",
+      "rmsd": "4.87"
     },
     {
       "pdb_id": "1IR3",
       "ligand": "ANP",
       "protein": "insulin receptor kinase",
-      "exact_rank": 21,
+      "contrastive_rank": 29,
+      "contrastive_top_hit": "1DB1 VDX",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 55,
+      "rigid_top_hit": "2RFS AM8",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1HDX NAD",
-      "same_ligand": false
+      "rigid_rmsd": "8.78",
+      "rmsd": "4.53"
     },
     {
       "pdb_id": "1M17",
       "ligand": "AQ4",
       "protein": "EGFR kinase",
-      "exact_rank": 47,
+      "contrastive_rank": 56,
+      "contrastive_top_hit": "1Y6A AAZ",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 90,
+      "rigid_top_hit": "1AGW SU2",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3PTB BEN",
-      "same_ligand": false
+      "rigid_rmsd": "8.49",
+      "rmsd": "5.26"
     },
     {
       "pdb_id": "1IEP",
       "ligand": "STI",
       "protein": "Abl kinase",
-      "exact_rank": 34,
+      "contrastive_rank": 6,
+      "contrastive_top_hit": "1XBB STI",
+      "contrastive_same_ligand": true,
+      "rigid_rank": 38,
+      "rigid_top_hit": "1QS4 100",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "2FGI PD1",
-      "same_ligand": false
+      "rigid_rmsd": "2.99",
+      "rmsd": "6.73"
     },
     {
       "pdb_id": "1CX2",
       "ligand": "S58",
       "protein": "COX-2",
-      "exact_rank": 112,
+      "contrastive_rank": 93,
+      "contrastive_top_hit": "1F88 RET",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 102,
+      "rigid_top_hit": "1BYQ ADP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C14 TCL",
-      "same_ligand": false
+      "rigid_rmsd": "7.63",
+      "rmsd": "4.45"
     },
     {
       "pdb_id": "4DFR",
       "ligand": "MTX",
       "protein": "dihydrofolate reductase",
-      "exact_rank": 79,
+      "contrastive_rank": 116,
+      "contrastive_top_hit": "1OYN ROL",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 96,
+      "rigid_top_hit": "1OYN ROL",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3ERT OHT",
-      "same_ligand": false
+      "rigid_rmsd": "7.99",
+      "rmsd": "4.96"
     },
     {
       "pdb_id": "1DWD",
       "ligand": "MID",
       "protein": "thrombin",
-      "exact_rank": 55,
+      "contrastive_rank": 103,
+      "contrastive_top_hit": "1CSB EP0",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 33,
+      "rigid_top_hit": "2YDO ADN",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1DV2 ATP",
-      "same_ligand": false
+      "rigid_rmsd": "7.27",
+      "rmsd": "4.42"
     },
     {
       "pdb_id": "3HS4",
       "ligand": "AZM",
       "protein": "carbonic anhydrase II",
-      "exact_rank": 92,
+      "contrastive_rank": 75,
+      "contrastive_top_hit": "1HRC HEC",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 74,
+      "rigid_top_hit": "1ICE ASA",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3PTB BEN",
-      "same_ligand": false
+      "rigid_rmsd": "5.32",
+      "rmsd": "2.96"
     },
     {
       "pdb_id": "2QWK",
       "ligand": "G39",
       "protein": "neuraminidase",
-      "exact_rank": 30,
+      "contrastive_rank": 44,
+      "contrastive_top_hit": "5TMN 0PJ",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 57,
+      "rigid_top_hit": "1FTN GDP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1QHA ANP",
-      "same_ligand": false
+      "rigid_rmsd": "5.59",
+      "rmsd": "3.18"
     },
     {
       "pdb_id": "2PRG",
       "ligand": "BRL",
       "protein": "PPAR gamma",
-      "exact_rank": 9,
+      "contrastive_rank": 16,
+      "contrastive_top_hit": "1I7I AZ2",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 7,
+      "rigid_top_hit": "1UWH BAX",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3PTB BEN",
-      "same_ligand": false
+      "rigid_rmsd": "8.70",
+      "rmsd": "4.76"
     },
     {
       "pdb_id": "1O86",
       "ligand": "LPR",
       "protein": "ACE",
-      "exact_rank": 34,
+      "contrastive_rank": 97,
+      "contrastive_top_hit": "1XWS BI1",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 99,
+      "rigid_top_hit": "1CKP PVB",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "5TMN 0PJ",
-      "same_ligand": false
+      "rigid_rmsd": "7.08",
+      "rmsd": "4.67"
     },
     {
       "pdb_id": "1X70",
       "ligand": "715",
       "protein": "DPP-4",
-      "exact_rank": 28,
+      "contrastive_rank": 1,
+      "contrastive_top_hit": "1X70 715",
+      "contrastive_same_ligand": true,
+      "rigid_rank": 100,
+      "rigid_top_hit": "1A49 ATP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": false
+      "rigid_rmsd": "10.02",
+      "rmsd": "5.09"
     },
     {
       "pdb_id": "1UK0",
       "ligand": "FRM",
       "protein": "PARP",
-      "exact_rank": 32,
+      "contrastive_rank": 66,
+      "contrastive_top_hit": "1CX2 S58",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 121,
+      "rigid_top_hit": "1ICE ASA",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "4TMN 0PK",
-      "same_ligand": false
+      "rigid_rmsd": "4.12",
+      "rmsd": "5.06"
     },
     {
       "pdb_id": "1W51",
       "ligand": "L01",
       "protein": "BACE",
-      "exact_rank": 56,
+      "contrastive_rank": 25,
+      "contrastive_top_hit": "1I10 NAI",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 111,
+      "rigid_top_hit": "1MMD ADP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1DV2 ATP",
-      "same_ligand": false
+      "rigid_rmsd": "9.50",
+      "rmsd": "5.26"
     },
     {
       "pdb_id": "1C83",
       "ligand": "OAI",
       "protein": "PTP1B",
-      "exact_rank": 1,
+      "contrastive_rank": 7,
+      "contrastive_top_hit": "2RH1 CAU",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 1,
+      "rigid_top_hit": "1C83 OAI",
+      "rigid_same_ligand": true,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": true
+      "rigid_rmsd": "2.38",
+      "rmsd": "3.42"
     },
     {
       "pdb_id": "121P",
       "ligand": "GCP",
       "protein": "H-Ras",
-      "exact_rank": 6,
+      "contrastive_rank": 7,
+      "contrastive_top_hit": "1GP2 GDP",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 14,
+      "rigid_top_hit": "2SRC ANP",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1HDX NAD",
-      "same_ligand": false
+      "rigid_rmsd": "10.38",
+      "rmsd": "4.81"
     },
     {
       "pdb_id": "1F88",
       "ligand": "RET",
       "protein": "rhodopsin",
-      "exact_rank": 38,
+      "contrastive_rank": 80,
+      "contrastive_top_hit": "1FBY 9CR",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 83,
+      "rigid_top_hit": "1PY5 PY1",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1W0E MET",
-      "same_ligand": false
+      "rigid_rmsd": "8.24",
+      "rmsd": "4.21"
     },
     {
       "pdb_id": "1JFF",
       "ligand": "TA1",
       "protein": "tubulin",
-      "exact_rank": 107,
+      "contrastive_rank": 14,
+      "contrastive_top_hit": "1KZN CBN",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 104,
+      "rigid_top_hit": "1C14 TCL",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "2B7A IZA",
-      "same_ligand": false
+      "rigid_rmsd": "6.06",
+      "rmsd": "5.21"
     },
     {
       "pdb_id": "3EQM",
       "ligand": "ASD",
       "protein": "aromatase",
-      "exact_rank": 14,
+      "contrastive_rank": 75,
+      "contrastive_top_hit": "4DFR MTX",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 29,
+      "rigid_top_hit": "1HHO HEM",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3EML ZMA",
-      "same_ligand": false
+      "rigid_rmsd": "6.26",
+      "rmsd": "3.64"
     },
     {
       "pdb_id": "2V5Z",
       "ligand": "SAG",
       "protein": "monoamine oxidase B",
-      "exact_rank": 53,
+      "contrastive_rank": 74,
+      "contrastive_top_hit": "1ERE EST",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 2,
+      "rigid_top_hit": "1W0E MET",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1AH3 TOL",
-      "same_ligand": false
+      "rigid_rmsd": "2.86",
+      "rmsd": "4.85"
     },
     {
       "pdb_id": "1KSN",
       "ligand": "FXV",
       "protein": "factor Xa",
-      "exact_rank": 90,
+      "contrastive_rank": 120,
+      "contrastive_top_hit": "1X70 715",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 57,
+      "rigid_top_hit": "1AKE AP5",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1ICE ASA",
-      "same_ligand": false
+      "rigid_rmsd": "5.60",
+      "rmsd": "5.37"
     },
     {
       "pdb_id": "1GFW",
       "ligand": "MSI",
       "protein": "caspase-3",
-      "exact_rank": 70,
+      "contrastive_rank": 79,
+      "contrastive_top_hit": "1PGG IMM",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 83,
+      "rigid_top_hit": "1VID DNC",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": false
+      "rigid_rmsd": "7.68",
+      "rmsd": "4.16"
     },
     {
       "pdb_id": "1T64",
       "ligand": "TSN",
       "protein": "HDAC",
-      "exact_rank": 113,
+      "contrastive_rank": 29,
+      "contrastive_top_hit": "1W0E MET",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 40,
+      "rigid_top_hit": "2QWK G39",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": false
+      "rigid_rmsd": "7.81",
+      "rmsd": "4.36"
     },
     {
       "pdb_id": "2AM9",
       "ligand": "TES",
       "protein": "androgen receptor",
-      "exact_rank": 15,
+      "contrastive_rank": 6,
+      "contrastive_top_hit": "3EML ZMA",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 96,
+      "rigid_top_hit": "1IEP STI",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1AH3 TOL",
-      "same_ligand": false
+      "rigid_rmsd": "3.91",
+      "rmsd": "3.44"
     },
     {
       "pdb_id": "1W0E",
       "ligand": "MET",
       "protein": "CYP3A4",
-      "exact_rank": 87,
+      "contrastive_rank": 10,
+      "contrastive_top_hit": "1EL3 I84",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 4,
+      "rigid_top_hit": "1ZIN AP5",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "3PTB BEN",
-      "same_ligand": false
+      "rigid_rmsd": "5.36",
+      "rmsd": "1.92"
     },
     {
       "pdb_id": "2RH1",
       "ligand": "CAU",
       "protein": "beta2 adrenergic receptor",
-      "exact_rank": 34,
+      "contrastive_rank": 104,
+      "contrastive_top_hit": "3EML ZMA",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 14,
+      "rigid_top_hit": "2B7A IZA",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1W0E MET",
-      "same_ligand": false
+      "rigid_rmsd": "5.62",
+      "rmsd": "3.98"
     },
     {
       "pdb_id": "3PTB",
       "ligand": "BEN",
       "protein": "trypsin",
-      "exact_rank": 115,
+      "contrastive_rank": 12,
+      "contrastive_top_hit": "1CSB EP0",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 27,
+      "rigid_top_hit": "1VID DNC",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1C83 OAI",
-      "same_ligand": false
+      "rigid_rmsd": "4.61",
+      "rmsd": "1.85"
     },
     {
       "pdb_id": "1HRC",
       "ligand": "HEC",
       "protein": "cytochrome c",
-      "exact_rank": 10,
+      "contrastive_rank": 104,
+      "contrastive_top_hit": "1ERR RAL",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 20,
+      "rigid_top_hit": "1FK9 EFZ",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1A9U SB2",
-      "same_ligand": false
+      "rigid_rmsd": "6.82",
+      "rmsd": "5.09"
     },
     {
       "pdb_id": "2H42",
       "ligand": "VIA",
       "protein": "PDE5",
-      "exact_rank": 85,
+      "contrastive_rank": 91,
+      "contrastive_top_hit": "1KSN FXV",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 67,
+      "rigid_top_hit": "2QWK G39",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1AH3 TOL",
-      "same_ligand": false
+      "rigid_rmsd": "5.37",
+      "rmsd": "4.52"
     },
     {
       "pdb_id": "1QS4",
       "ligand": "100",
       "protein": "HIV integrase",
-      "exact_rank": 110,
+      "contrastive_rank": 1,
+      "contrastive_top_hit": "1QS4 100",
+      "contrastive_same_ligand": true,
+      "rigid_rank": 31,
+      "rigid_top_hit": "1VID DNC",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1IR3 ANP",
-      "same_ligand": false
+      "rigid_rmsd": "6.30",
+      "rmsd": "3.83"
     },
     {
       "pdb_id": "2OC8",
       "ligand": "U5G",
       "protein": "HCV protease",
-      "exact_rank": 61,
+      "contrastive_rank": 93,
+      "contrastive_top_hit": "2B7A IZA",
+      "contrastive_same_ligand": false,
+      "rigid_rank": 57,
+      "rigid_top_hit": "1CKP PVB",
+      "rigid_same_ligand": false,
       "gallery_size": 124,
-      "top_hit": "1W0E MET",
-      "same_ligand": false
+      "rigid_rmsd": "9.17",
+      "rmsd": "4.49"
     }
   ],
   "rmsd": [
@@ -322,745 +514,745 @@
       "pdb_id": "1ATP",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 5.048114776611328
+      "rmsd": 5.2151665687561035
     },
     {
       "pdb_id": "1STC",
       "ligand": "STU",
       "split": "train",
-      "rmsd": 4.035305023193359
+      "rmsd": 3.9640491008758545
     },
     {
       "pdb_id": "1FMO",
       "ligand": "ADN",
       "split": "train",
-      "rmsd": 3.4706127643585205
+      "rmsd": 3.2301628589630127
     },
     {
       "pdb_id": "1HCK",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 4.552394390106201
+      "rmsd": 4.445219039916992
     },
     {
       "pdb_id": "1FIN",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 4.95216178894043
+      "rmsd": 4.681811332702637
     },
     {
       "pdb_id": "1AQ1",
       "ligand": "STU",
       "split": "train",
-      "rmsd": 3.793550729751587
+      "rmsd": 3.6489715576171875
     },
     {
       "pdb_id": "1CKP",
       "ligand": "PVB",
       "split": "train",
-      "rmsd": 3.3347465991973877
+      "rmsd": 3.38387393951416
     },
     {
       "pdb_id": "2C6O",
       "ligand": "4SP",
       "split": "train",
-      "rmsd": 4.369719982147217
+      "rmsd": 4.372415065765381
     },
     {
       "pdb_id": "1CSN",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 4.736844539642334
+      "rmsd": 4.938758850097656
     },
     {
       "pdb_id": "1PHK",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 4.460471153259277
+      "rmsd": 4.52267599105835
     },
     {
       "pdb_id": "1JWH",
       "ligand": "ANP",
       "split": "train",
-      "rmsd": 4.483974933624268
+      "rmsd": 4.4528350830078125
     },
     {
       "pdb_id": "1A9U",
       "ligand": "SB2",
       "split": "train",
-      "rmsd": 4.7101616859436035
+      "rmsd": 4.850852966308594
     },
     {
       "pdb_id": "1BMK",
       "ligand": "SB5",
       "split": "train",
-      "rmsd": 3.6414597034454346
+      "rmsd": 3.676097869873047
     },
     {
       "pdb_id": "1UWH",
       "ligand": "BAX",
       "split": "train",
-      "rmsd": 6.094262599945068
+      "rmsd": 6.218626022338867
     },
     {
       "pdb_id": "1Q3D",
       "ligand": "STU",
       "split": "train",
-      "rmsd": 3.9024014472961426
+      "rmsd": 3.805208921432495
     },
     {
       "pdb_id": "1Q41",
       "ligand": "IXM",
       "split": "train",
-      "rmsd": 3.61912202835083
+      "rmsd": 3.4413039684295654
     },
     {
       "pdb_id": "1O6K",
       "ligand": "ANP",
       "split": "train",
-      "rmsd": 5.211456298828125
+      "rmsd": 5.217494964599609
     },
     {
       "pdb_id": "1XWS",
       "ligand": "BI1",
       "split": "train",
-      "rmsd": 3.8541457653045654
+      "rmsd": 3.9122684001922607
     },
     {
       "pdb_id": "1QPE",
       "ligand": "PP2",
       "split": "train",
-      "rmsd": 3.61999249458313
+      "rmsd": 3.4660887718200684
     },
     {
       "pdb_id": "2B7A",
       "ligand": "IZA",
       "split": "train",
-      "rmsd": 3.6529622077941895
+      "rmsd": 3.511908531188965
     },
     {
       "pdb_id": "1T46",
       "ligand": "STI",
       "split": "train",
-      "rmsd": 6.502962589263916
+      "rmsd": 6.572725772857666
     },
     {
       "pdb_id": "2FGI",
       "ligand": "PD1",
       "split": "train",
-      "rmsd": 5.914525032043457
+      "rmsd": 5.931641578674316
     },
     {
       "pdb_id": "1AGW",
       "ligand": "SU2",
       "split": "train",
-      "rmsd": 5.254128932952881
+      "rmsd": 5.1613945960998535
     },
     {
       "pdb_id": "1NVQ",
       "ligand": "UCN",
       "split": "train",
-      "rmsd": 3.850374698638916
+      "rmsd": 3.8859457969665527
     },
     {
       "pdb_id": "1XBB",
       "ligand": "STI",
       "split": "train",
-      "rmsd": 5.739721775054932
+      "rmsd": 5.855521202087402
     },
     {
       "pdb_id": "1U59",
       "ligand": "STU",
       "split": "train",
-      "rmsd": 4.074154376983643
+      "rmsd": 3.8822848796844482
     },
     {
       "pdb_id": "2SRC",
       "ligand": "ANP",
       "split": "train",
-      "rmsd": 5.125006675720215
+      "rmsd": 4.89381217956543
     },
     {
       "pdb_id": "2RFS",
       "ligand": "AM8",
       "split": "train",
-      "rmsd": 4.370201110839844
+      "rmsd": 4.304808616638184
     },
     {
       "pdb_id": "1Y6A",
       "ligand": "AAZ",
       "split": "train",
-      "rmsd": 4.071310043334961
+      "rmsd": 3.9670212268829346
     },
     {
       "pdb_id": "1PY5",
       "ligand": "PY1",
       "split": "train",
-      "rmsd": 3.4443492889404297
+      "rmsd": 3.418733835220337
     },
     {
       "pdb_id": "1SM2",
       "ligand": "STU",
       "split": "train",
-      "rmsd": 4.074817657470703
+      "rmsd": 3.9616570472717285
     },
     {
       "pdb_id": "1BYQ",
       "ligand": "ADP",
       "split": "train",
-      "rmsd": 3.8676791191101074
+      "rmsd": 3.707490921020508
     },
     {
       "pdb_id": "1UY6",
       "ligand": "PU3",
       "split": "train",
-      "rmsd": 4.18944787979126
+      "rmsd": 4.125876426696777
     },
     {
       "pdb_id": "1AKE",
       "ligand": "AP5",
       "split": "train",
-      "rmsd": 7.993514060974121
+      "rmsd": 7.9868245124816895
     },
     {
       "pdb_id": "1ZIN",
       "ligand": "AP5",
       "split": "train",
-      "rmsd": 8.262699127197266
+      "rmsd": 8.57829475402832
     },
     {
       "pdb_id": "1MBO",
       "ligand": "HEM",
       "split": "train",
-      "rmsd": 4.676188945770264
+      "rmsd": 4.724293231964111
     },
     {
       "pdb_id": "1MBN",
       "ligand": "HEM",
       "split": "train",
-      "rmsd": 4.937366008758545
+      "rmsd": 4.96037483215332
     },
     {
       "pdb_id": "1HDA",
       "ligand": "HEM",
       "split": "train",
-      "rmsd": 5.294958591461182
+      "rmsd": 5.181868076324463
     },
     {
       "pdb_id": "1HHO",
       "ligand": "HEM",
       "split": "train",
-      "rmsd": 5.01759147644043
+      "rmsd": 5.1382012367248535
     },
     {
       "pdb_id": "2HHB",
       "ligand": "HEM",
       "split": "train",
-      "rmsd": 5.016733169555664
+      "rmsd": 4.948772430419922
     },
     {
       "pdb_id": "2HCK",
       "ligand": "QUE",
       "split": "train",
-      "rmsd": 3.922203540802002
+      "rmsd": 3.7247891426086426
     },
     {
       "pdb_id": "1HSG",
       "ligand": "MK1",
       "split": "train",
-      "rmsd": 6.00012731552124
+      "rmsd": 6.092151641845703
     },
     {
       "pdb_id": "1HVR",
       "ligand": "XK2",
       "split": "train",
-      "rmsd": 5.244053840637207
+      "rmsd": 5.408330917358398
     },
     {
       "pdb_id": "1HPX",
       "ligand": "KNI",
       "split": "train",
-      "rmsd": 5.830922603607178
+      "rmsd": 5.975478172302246
     },
     {
       "pdb_id": "4PHV",
       "ligand": "VAC",
       "split": "train",
-      "rmsd": 5.555807113647461
+      "rmsd": 5.6808037757873535
     },
     {
       "pdb_id": "3ERT",
       "ligand": "OHT",
       "split": "train",
-      "rmsd": 4.51894474029541
+      "rmsd": 4.512757301330566
     },
     {
       "pdb_id": "1ERE",
       "ligand": "EST",
       "split": "train",
-      "rmsd": 3.5068931579589844
+      "rmsd": 3.669262170791626
     },
     {
       "pdb_id": "1ERR",
       "ligand": "RAL",
       "split": "train",
-      "rmsd": 5.126245498657227
+      "rmsd": 5.136247158050537
     },
     {
       "pdb_id": "1HWK",
       "ligand": "117",
       "split": "train",
-      "rmsd": 5.0838212966918945
+      "rmsd": 5.292901039123535
     },
     {
       "pdb_id": "1EVE",
       "ligand": "E20",
       "split": "train",
-      "rmsd": 5.245498180389404
+      "rmsd": 5.30904483795166
     },
     {
       "pdb_id": "1EQG",
       "ligand": "IBP",
       "split": "train",
-      "rmsd": 3.7862675189971924
+      "rmsd": 3.1769485473632812
     },
     {
       "pdb_id": "1PGG",
       "ligand": "IMM",
       "split": "train",
-      "rmsd": 4.452568531036377
+      "rmsd": 4.331257343292236
     },
     {
       "pdb_id": "1OG5",
       "ligand": "SWF",
       "split": "train",
-      "rmsd": 3.2406036853790283
+      "rmsd": 3.2353789806365967
     },
     {
       "pdb_id": "1R9O",
       "ligand": "FLP",
       "split": "train",
-      "rmsd": 3.6327836513519287
+      "rmsd": 3.649091958999634
     },
     {
       "pdb_id": "1HDX",
       "ligand": "NAD",
       "split": "train",
-      "rmsd": 6.372798919677734
+      "rmsd": 6.2826247215271
     },
     {
       "pdb_id": "1I10",
       "ligand": "NAI",
       "split": "train",
-      "rmsd": 6.412719249725342
+      "rmsd": 6.388125896453857
     },
     {
       "pdb_id": "1AH3",
       "ligand": "TOL",
       "split": "train",
-      "rmsd": 3.683095693588257
+      "rmsd": 3.569789409637451
     },
     {
       "pdb_id": "1EL3",
       "ligand": "I84",
       "split": "train",
-      "rmsd": 4.798279762268066
+      "rmsd": 4.859220504760742
     },
     {
       "pdb_id": "1HFC",
       "ligand": "PLH",
       "split": "train",
-      "rmsd": 4.537212371826172
+      "rmsd": 4.400094509124756
     },
     {
       "pdb_id": "1CGL",
       "ligand": "0ED",
       "split": "train",
-      "rmsd": 5.875770568847656
+      "rmsd": 6.307415008544922
     },
     {
       "pdb_id": "4TMN",
       "ligand": "0PK",
       "split": "train",
-      "rmsd": 5.215672492980957
+      "rmsd": 5.243993759155273
     },
     {
       "pdb_id": "5TMN",
       "ligand": "0PJ",
       "split": "train",
-      "rmsd": 5.1416168212890625
+      "rmsd": 5.122846603393555
     },
     {
       "pdb_id": "1ICE",
       "ligand": "ASA",
       "split": "train",
-      "rmsd": 2.680311679840088
+      "rmsd": 2.127701997756958
     },
     {
       "pdb_id": "1CSB",
       "ligand": "EP0",
       "split": "train",
-      "rmsd": 4.221707820892334
+      "rmsd": 4.2271647453308105
     },
     {
       "pdb_id": "1MEM",
       "ligand": "0D6",
       "split": "train",
-      "rmsd": 5.095259666442871
+      "rmsd": 4.920494556427002
     },
     {
       "pdb_id": "2V0Z",
       "ligand": "C41",
       "split": "train",
-      "rmsd": 6.301614761352539
+      "rmsd": 6.47922420501709
     },
     {
       "pdb_id": "1VRT",
       "ligand": "NVP",
       "split": "train",
-      "rmsd": 3.36391544342041
+      "rmsd": 3.042398452758789
     },
     {
       "pdb_id": "1FK9",
       "ligand": "EFZ",
       "split": "train",
-      "rmsd": 3.3276538848876953
+      "rmsd": 3.0326685905456543
     },
     {
       "pdb_id": "1C14",
       "ligand": "TCL",
       "split": "train",
-      "rmsd": 3.063390016555786
+      "rmsd": 3.0558712482452393
     },
     {
       "pdb_id": "1P44",
       "ligand": "GEQ",
       "split": "train",
-      "rmsd": 4.563673973083496
+      "rmsd": 4.493715763092041
     },
     {
       "pdb_id": "1KZN",
       "ligand": "CBN",
       "split": "train",
-      "rmsd": 6.294051170349121
+      "rmsd": 6.4306182861328125
     },
     {
       "pdb_id": "1CBS",
       "ligand": "REA",
       "split": "train",
-      "rmsd": 5.0611772537231445
+      "rmsd": 5.116250038146973
     },
     {
       "pdb_id": "1DB1",
       "ligand": "VDX",
       "split": "train",
-      "rmsd": 5.324659824371338
+      "rmsd": 5.32314395904541
     },
     {
       "pdb_id": "1FBY",
       "ligand": "9CR",
       "split": "train",
-      "rmsd": 4.657023906707764
+      "rmsd": 4.7282867431640625
     },
     {
       "pdb_id": "1A28",
       "ligand": "STR",
       "split": "train",
-      "rmsd": 3.8320674896240234
+      "rmsd": 3.7648725509643555
     },
     {
       "pdb_id": "1M2Z",
       "ligand": "DEX",
       "split": "train",
-      "rmsd": 3.824505090713501
+      "rmsd": 3.8668429851531982
     },
     {
       "pdb_id": "1K7L",
       "ligand": "544",
       "split": "train",
-      "rmsd": 5.125766754150391
+      "rmsd": 5.284361362457275
     },
     {
       "pdb_id": "1I7I",
       "ligand": "AZ2",
       "split": "train",
-      "rmsd": 5.1727752685546875
+      "rmsd": 5.181972503662109
     },
     {
       "pdb_id": "1P8D",
       "ligand": "CO1",
       "split": "train",
-      "rmsd": 4.868051052093506
+      "rmsd": 4.911696910858154
     },
     {
       "pdb_id": "1OSV",
       "ligand": "CHC",
       "split": "train",
-      "rmsd": 4.611475467681885
+      "rmsd": 4.627599239349365
     },
     {
       "pdb_id": "1FTN",
       "ligand": "GDP",
       "split": "train",
-      "rmsd": 4.164005756378174
+      "rmsd": 4.212581157684326
     },
     {
       "pdb_id": "1GP2",
       "ligand": "GDP",
       "split": "train",
-      "rmsd": 4.328862190246582
+      "rmsd": 4.448827266693115
     },
     {
       "pdb_id": "2YDO",
       "ligand": "ADN",
       "split": "train",
-      "rmsd": 3.517019510269165
+      "rmsd": 3.2403080463409424
     },
     {
       "pdb_id": "3EML",
       "ligand": "ZMA",
       "split": "train",
-      "rmsd": 5.051173686981201
+      "rmsd": 4.920103073120117
     },
     {
       "pdb_id": "1OYN",
       "ligand": "ROL",
       "split": "train",
-      "rmsd": 3.061868190765381
+      "rmsd": 3.1599748134613037
     },
     {
       "pdb_id": "1VID",
       "ligand": "DNC",
       "split": "train",
-      "rmsd": 2.612692356109619
+      "rmsd": 2.6236274242401123
     },
     {
       "pdb_id": "1MMD",
       "ligand": "ADP",
       "split": "train",
-      "rmsd": 4.108394145965576
+      "rmsd": 4.239731788635254
     },
     {
       "pdb_id": "4PFK",
       "ligand": "ADP",
       "split": "train",
-      "rmsd": 4.19132661819458
+      "rmsd": 4.133679389953613
     },
     {
       "pdb_id": "1A49",
       "ligand": "ATP",
       "split": "train",
-      "rmsd": 4.184228897094727
+      "rmsd": 4.389787197113037
     },
     {
       "pdb_id": "1QHA",
       "ligand": "ANP",
       "split": "train",
-      "rmsd": 4.79167366027832
+      "rmsd": 4.79190731048584
     },
     {
       "pdb_id": "1DV2",
       "ligand": "ATP",
       "split": "test",
-      "rmsd": 5.041939735412598
+      "rmsd": 4.67620325088501
     },
     {
       "pdb_id": "1KAX",
       "ligand": "ATP",
       "split": "test",
-      "rmsd": 4.943779468536377
+      "rmsd": 4.975646018981934
     },
     {
       "pdb_id": "1BG2",
       "ligand": "ADP",
       "split": "test",
-      "rmsd": 4.069647312164307
+      "rmsd": 3.983187437057495
     },
     {
       "pdb_id": "1ECD",
       "ligand": "HEM",
       "split": "test",
-      "rmsd": 4.809289455413818
+      "rmsd": 4.869537830352783
     },
     {
       "pdb_id": "1IR3",
       "ligand": "ANP",
       "split": "test",
-      "rmsd": 4.464903354644775
+      "rmsd": 4.534573078155518
     },
     {
       "pdb_id": "1M17",
       "ligand": "AQ4",
       "split": "test",
-      "rmsd": 5.257688999176025
+      "rmsd": 5.263295650482178
     },
     {
       "pdb_id": "1IEP",
       "ligand": "STI",
       "split": "test",
-      "rmsd": 6.717867851257324
+      "rmsd": 6.731617450714111
     },
     {
       "pdb_id": "1CX2",
       "ligand": "S58",
       "split": "test",
-      "rmsd": 4.464667320251465
+      "rmsd": 4.446035385131836
     },
     {
       "pdb_id": "4DFR",
       "ligand": "MTX",
       "split": "test",
-      "rmsd": 4.829026699066162
+      "rmsd": 4.963885307312012
     },
     {
       "pdb_id": "1DWD",
       "ligand": "MID",
       "split": "test",
-      "rmsd": 4.440495491027832
+      "rmsd": 4.421850204467773
     },
     {
       "pdb_id": "3HS4",
       "ligand": "AZM",
       "split": "test",
-      "rmsd": 3.0965054035186768
+      "rmsd": 2.957998514175415
     },
     {
       "pdb_id": "2QWK",
       "ligand": "G39",
       "split": "test",
-      "rmsd": 3.190741539001465
+      "rmsd": 3.1750717163085938
     },
     {
       "pdb_id": "2PRG",
       "ligand": "BRL",
       "split": "test",
-      "rmsd": 4.797109127044678
+      "rmsd": 4.764820098876953
     },
     {
       "pdb_id": "1O86",
       "ligand": "LPR",
       "split": "test",
-      "rmsd": 4.63620662689209
+      "rmsd": 4.666073799133301
     },
     {
       "pdb_id": "1X70",
       "ligand": "715",
       "split": "test",
-      "rmsd": 5.043455123901367
+      "rmsd": 5.091673851013184
     },
     {
       "pdb_id": "1UK0",
       "ligand": "FRM",
       "split": "test",
-      "rmsd": 5.056605339050293
+      "rmsd": 5.055802345275879
     },
     {
       "pdb_id": "1W51",
       "ligand": "L01",
       "split": "test",
-      "rmsd": 5.107763767242432
+      "rmsd": 5.260427951812744
     },
     {
       "pdb_id": "1C83",
       "ligand": "OAI",
       "split": "test",
-      "rmsd": 3.47147798538208
+      "rmsd": 3.422015905380249
     },
     {
       "pdb_id": "121P",
       "ligand": "GCP",
       "split": "test",
-      "rmsd": 4.812856674194336
+      "rmsd": 4.814609527587891
     },
     {
       "pdb_id": "1F88",
       "ligand": "RET",
       "split": "test",
-      "rmsd": 4.302699089050293
+      "rmsd": 4.20898962020874
     },
     {
       "pdb_id": "1JFF",
       "ligand": "TA1",
       "split": "test",
-      "rmsd": 5.154374599456787
+      "rmsd": 5.207647800445557
     },
     {
       "pdb_id": "3EQM",
       "ligand": "ASD",
       "split": "test",
-      "rmsd": 3.8333468437194824
+      "rmsd": 3.643348217010498
     },
     {
       "pdb_id": "2V5Z",
       "ligand": "SAG",
       "split": "test",
-      "rmsd": 4.7621378898620605
+      "rmsd": 4.846741676330566
     },
     {
       "pdb_id": "1KSN",
       "ligand": "FXV",
       "split": "test",
-      "rmsd": 5.266979217529297
+      "rmsd": 5.366340637207031
     },
     {
       "pdb_id": "1GFW",
       "ligand": "MSI",
       "split": "test",
-      "rmsd": 4.086977958679199
+      "rmsd": 4.163224697113037
     },
     {
       "pdb_id": "1T64",
       "ligand": "TSN",
       "split": "test",
-      "rmsd": 4.3265700340271
+      "rmsd": 4.360509872436523
     },
     {
       "pdb_id": "2AM9",
       "ligand": "TES",
       "split": "test",
-      "rmsd": 3.457200050354004
+      "rmsd": 3.4373409748077393
     },
     {
       "pdb_id": "1W0E",
       "ligand": "MET",
       "split": "test",
-      "rmsd": 2.1786980628967285
+      "rmsd": 1.920297622680664
     },
     {
       "pdb_id": "2RH1",
       "ligand": "CAU",
       "split": "test",
-      "rmsd": 3.8720076084136963
+      "rmsd": 3.9829306602478027
     },
     {
       "pdb_id": "3PTB",
       "ligand": "BEN",
       "split": "test",
-      "rmsd": 1.6801525354385376
+      "rmsd": 1.8503608703613281
     },
     {
       "pdb_id": "1HRC",
       "ligand": "HEC",
       "split": "test",
-      "rmsd": 5.15408182144165
+      "rmsd": 5.092569828033447
     },
     {
       "pdb_id": "2H42",
       "ligand": "VIA",
       "split": "test",
-      "rmsd": 4.348708152770996
+      "rmsd": 4.520522594451904
     },
     {
       "pdb_id": "1QS4",
       "ligand": "100",
       "split": "test",
-      "rmsd": 3.8945138454437256
+      "rmsd": 3.8326706886291504
     },
     {
       "pdb_id": "2OC8",
       "ligand": "U5G",
       "split": "test",
-      "rmsd": 4.638923645019531
+      "rmsd": 4.485581874847412
     }
   ]
 }
