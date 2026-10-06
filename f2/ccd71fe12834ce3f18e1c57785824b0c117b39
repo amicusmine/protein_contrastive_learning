@@ -1,0 +1,81 @@
+.gitignore
+  s_3d7442283aed51::t_ffa448e752d204 1-10
+INSTALL_GUIDE.md
+  s_3d7442283aed51::t_81044ecddc8ccf 1-123
+PROJECT_SUMMARY.md
+  s_3d7442283aed51::t_70bff1aca41bc8 1-337
+QUICK_START.md
+  s_3d7442283aed51::t_87783410fc2889 1-332
+README.md
+  s_3d7442283aed51::t_0a4864f303d337 1-88
+START_HERE.md
+  s_3d7442283aed51::t_54172ec9077f4a 1-366
+TROUBLESHOOTING.md
+  s_3d7442283aed51::t_120a23dfa0eef2 1-80
+TUTORIAL.md
+  s_3d7442283aed51::t_07d8f077e24153 1-522
+data/processed/metadata.csv
+  s_3d7442283aed51::t_11a32c9593e2a2 1-10
+data/processed/pairs.csv
+  s_3d7442283aed51::t_038b93a1ef84ea 1-37
+data/processed/test.csv
+  s_3d7442283aed51::t_7b76b3dfa29b0c 1-9
+data/processed/train.csv
+  s_3d7442283aed51::t_aad7dbb8f2b234 1-23
+data/processed/val.csv
+  s_3d7442283aed51::t_2182429798e380 1-7
+data_preparation.py
+  s_3d7442283aed51::t_e63106d1002639 1-227
+demo.py
+  s_3d7442283aed51::t_02e1d5abbbcbeb 1-194
+evaluate.py
+  s_3d7442283aed51::t_a0160321d4bfd9 1-379
+install_deps.sh
+  s_3d7442283aed51::t_48d5b7390dbc62 1-39
+model.py
+  s_3d7442283aed51::t_d20e713f2f1c0d 1-312
+model_simple.py
+  s_3d7442283aed51::t_6b8b1b1af8fb0a 1-241
+quick_start.sh
+  s_3d7442283aed51::t_9ff546bab00780 1-34
+quick_test.py
+  s_3d7442283aed51::t_b17d843717f753 1-78
+requirements.txt
+  s_3d7442283aed51::t_da43f8831e42db 1-30
+retrieval_and_generation.py
+  s_3d7442283aed51::t_86889e2b1a9dd5 1-143
+run_all.py
+  s_3d7442283aed51::t_da6897360b9e7e 1-113
+structures.py
+  s_3d7442283aed51::t_8e75b3d61a03e4 1-187
+test_env.py
+  s_3d7442283aed51::t_0732d080afe75e 1-105
+test_system.py
+  s_3d7442283aed51::t_c4e33bc0ed1f7f 1-277
+test_training.py
+  s_3d7442283aed51::t_fa0de7d5aa92b1 1-139
+train.py
+  s_3d7442283aed51::t_6c7686714c2c35 1-346
+train_demo.py
+  s_3d7442283aed51::t_f592d03fbb9f4b 1-77
+交付说明.txt
+  s_3d7442283aed51::t_608142510e3092 1-235
+项目说明.txt
+  s_3d7442283aed51::t_3ec6aafaecacf1 1-168
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f2ccd71fe12834ce3f18e1c57785824b0c117b39",
+  "prompts": {},
+  "sessions": {
+    "s_3d7442283aed51": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "db4a828c-6f68-4f9a-aa5f-63384934181c",
+        "model": "unknown"
+      },
+      "human_author": "amicus4ever <liuzhenhe7@gmail.com>"
+    }
+  }
+}
