@@ -1,0 +1,10 @@
+.venv/
+.idea/
+__pycache__/
+*.pyc
+checkpoints/
+data/cache/
+data/raw/
+results/
+*.pt
+.DS_Store

@@ -1,0 +1,7 @@
+pdb1,pdb2,label,category
+1ALC,1TRZ,1,other
+2HCK,4AKE,0,ATP_binding_vs_ADP_binding
+3LZA,1ALC,0,ATP_binding_vs_other
+1ATP,1TRZ,0,ATP_binding_vs_other
+3LZA,4AKE,0,ATP_binding_vs_ADP_binding
+4AKE,1HDA,0,ADP_binding_vs_Heme_binding

@@ -1,0 +1,10 @@
+pdb_id,category,ligand,name,pdb_file
+1ATP,ATP_binding,ATP,Protein Kinase,data/raw/1ATP.pdb
+3LZA,ATP_binding,ATP,HSP90,data/raw/3LZA.pdb
+2HCK,ATP_binding,ATP,Tyrosine Kinase,data/raw/2HCK.pdb
+1AKE,ADP_binding,ADP,Adenylate Kinase,data/raw/1AKE.pdb
+4AKE,ADP_binding,ADP,Adenylate Kinase variant,data/raw/4AKE.pdb
+1MBO,Heme_binding,HEM,Myoglobin,data/raw/1MBO.pdb
+1HDA,Heme_binding,HEM,Hemoglobin,data/raw/1HDA.pdb
+1ALC,other,BEN,Alcohol Dehydrogenase,data/raw/1ALC.pdb
+1TRZ,other,NAD,Transaldolase,data/raw/1TRZ.pdb
