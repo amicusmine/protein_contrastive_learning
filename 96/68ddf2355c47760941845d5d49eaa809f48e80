@@ -1,0 +1,52 @@
+.gitignore
+  s_3d7442283aed51::t_81dcef3efcab8e 10
+data_preparation.py
+  s_3d7442283aed51::t_697e1d445962c1 84-86,90,92-103,110-111,113-123,140,142-153,155-162
+train_demo.py
+  s_3d7442283aed51::t_0a8d26762b2d4e 14-15
+  s_3d7442283aed51::t_b6fbc77be78e0a 1,4-6,8-11,27-85,87-109,111-116,127-129,131-132,146-149,153,156,161,166,168-184,188,190-191,193,197,202-220,222-273
+  s_3d7442283aed51::t_f6d9facfa30e5e 86
+  s_3d7442283aed51::t_e8103d3a834a0f 221
+  s_3d7442283aed51::t_44ac7d5218b070 124-125
+  s_3d7442283aed51::t_6d0831b5d1b679 130
+  s_3d7442283aed51::t_824bbee6f3753a 110,117-123,126
+data/processed/pairs.csv
+  s_3d7442283aed51::t_7b00bd97c68b44 2-88
+data/processed/train.csv
+  s_3d7442283aed51::t_7b00bd97c68b44 2-54
+run_all.py
+  s_3d7442283aed51::t_32a1f515355090 98
+data/processed/metadata.csv
+  s_3d7442283aed51::t_7b00bd97c68b44 1-20
+data/processed/heldout_results.csv
+  s_3d7442283aed51::t_d286a0092232fe 1-8
+models/metrics.json
+  s_3d7442283aed51::t_d286a0092232fe 1-193
+structures.py
+  s_3d7442283aed51::t_2b383af596950a 30-34,36-54
+  s_3d7442283aed51::t_b04059bc3146b4 192,195,198
+README.md
+  s_3d7442283aed51::t_afc2e36d12c11b 10,12-13,17-18,24,56,59
+  s_3d7442283aed51::t_efd87dcd9029b5 3,5-6,8,11,15,21,23,25-43,45,47,49,51,53,55,57,60-62,65,67,69,71-79,81,83,85,87,89,91,93-95,98-100,103,107
+  s_3d7442283aed51::t_e282f21fd29601 58
+data/processed/val.csv
+  s_3d7442283aed51::t_7b00bd97c68b44 2-14
+data/processed/test.csv
+  s_3d7442283aed51::t_7b00bd97c68b44 2-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9668ddf2355c47760941845d5d49eaa809f48e80",
+  "prompts": {},
+  "sessions": {
+    "s_3d7442283aed51": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "db4a828c-6f68-4f9a-aa5f-63384934181c",
+        "model": "grok-4.7"
+      },
+      "human_author": "amicus4ever <liuzhenhe7@gmail.com>"
+    }
+  }
+}
