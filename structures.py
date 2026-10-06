@@ -27,17 +27,31 @@ AA_PROPERTIES = {
     "UNK": [0, 0, 0, 100],
 }
 
-# Ligand codes were checked against the PDB files. Several names in the
-# older site-only demo do not match the deposited ligand, so this list is separate.
+# Residue names were read from the PDB HET records. 1HWK is the atorvastatin
+# complex: the statin is residue 117, and the ADP in that file is a cofactor.
+# 3LZA, 4AKE, 1ALC, and 1TRZ are omitted because they do not contain the
+# ligands an earlier version of this repository claimed.
+# split is by whole complex. A test protein never appears in training.
 COMPLEXES = [
-    ("1ATP", "ATP", "cAMP-dependent protein kinase"),
-    ("1HWK", "ADP", "thymidylate kinase"),
-    ("1AKE", "AP5", "adenylate kinase"),
-    ("1MBO", "HEM", "myoglobin"),
-    ("1HDA", "HEM", "hemoglobin"),
-    ("2HCK", "QUE", "Src kinase"),
-    ("1HSG", "MK1", "HIV protease"),
-    ("3ERT", "OHT", "estrogen receptor"),
+    ("1ATP", "ATP", "cAMP-dependent protein kinase", "train"),
+    ("1HCK", "ATP", "cyclin-dependent kinase 2", "train"),
+    ("1CSN", "ATP", "casein kinase 1", "train"),
+    ("1BYQ", "ADP", "Hsp90", "train"),
+    ("1AKE", "AP5", "adenylate kinase", "train"),
+    ("1MBO", "HEM", "myoglobin", "train"),
+    ("1HDA", "HEM", "hemoglobin", "train"),
+    ("2HCK", "QUE", "Src-family kinase Hck", "train"),
+    ("1HSG", "MK1", "HIV protease", "train"),
+    ("3ERT", "OHT", "estrogen receptor", "train"),
+    ("1HWK", "117", "HMG-CoA reductase", "train"),
+    ("1EVE", "E20", "acetylcholinesterase", "train"),
+    ("1DV2", "ATP", "biotin carboxylase", "test"),
+    ("1KAX", "ATP", "Hsp70", "test"),
+    ("1BG2", "ADP", "kinesin", "test"),
+    ("1ECD", "HEM", "erythrocruorin", "test"),
+    ("1IEP", "STI", "Abl kinase", "test"),
+    ("1M17", "AQ4", "EGFR kinase", "test"),
+    ("1IR3", "ANP", "insulin receptor kinase", "test"),
 ]
 
 ELEMENTS = ["C", "N", "O", "S", "P", "X"]
@@ -175,12 +189,13 @@ def load_complex(pdb_id, ligand_name, save_dir=RAW_DIR):
 
 def load_all(save_dir=RAW_DIR):
     complexes = []
-    for pdb_id, ligand_name, title in COMPLEXES:
+    for pdb_id, ligand_name, title, split in COMPLEXES:
         item = load_complex(pdb_id, ligand_name, save_dir)
         item["title"] = title
+        item["split"] = split
         complexes.append(item)
         print(
-            f"{pdb_id} {ligand_name}: "
+            f"{split} {pdb_id} {ligand_name}: "
             f"{len(item['pocket']['coords'])} pocket residues, "
             f"{len(item['ligand']['coords'])} ligand atoms"
         )

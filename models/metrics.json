@@ -1,0 +1,193 @@
+{
+  "seed": 0,
+  "retrieval_steps": 800,
+  "generation_steps": 800,
+  "lr": 0.0003,
+  "device": "cpu",
+  "train_exact_top1": 0.8333333134651184,
+  "test_exact_top1_in_test_gallery": 0.1428571492433548,
+  "test_same_ligand_top1_in_full_gallery": 0.14285714285714285,
+  "mean_rmsd_train": 5.012129147847493,
+  "mean_rmsd_test": 5.052001816885812,
+  "test_retrieval": [
+    {
+      "pdb_id": "1DV2",
+      "ligand": "ATP",
+      "protein": "biotin carboxylase",
+      "exact_rank": 1,
+      "gallery_size": 19,
+      "top_hit": "1DV2 ATP",
+      "same_ligand": true
+    },
+    {
+      "pdb_id": "1KAX",
+      "ligand": "ATP",
+      "protein": "Hsp70",
+      "exact_rank": 5,
+      "gallery_size": 19,
+      "top_hit": "1BYQ ADP",
+      "same_ligand": false
+    },
+    {
+      "pdb_id": "1BG2",
+      "ligand": "ADP",
+      "protein": "kinesin",
+      "exact_rank": 4,
+      "gallery_size": 19,
+      "top_hit": "1DV2 ATP",
+      "same_ligand": false
+    },
+    {
+      "pdb_id": "1ECD",
+      "ligand": "HEM",
+      "protein": "erythrocruorin",
+      "exact_rank": 10,
+      "gallery_size": 19,
+      "top_hit": "1HCK ATP",
+      "same_ligand": false
+    },
+    {
+      "pdb_id": "1IEP",
+      "ligand": "STI",
+      "protein": "Abl kinase",
+      "exact_rank": 14,
+      "gallery_size": 19,
+      "top_hit": "1HCK ATP",
+      "same_ligand": false
+    },
+    {
+      "pdb_id": "1M17",
+      "ligand": "AQ4",
+      "protein": "EGFR kinase",
+      "exact_rank": 13,
+      "gallery_size": 19,
+      "top_hit": "1HCK ATP",
+      "same_ligand": false
+    },
+    {
+      "pdb_id": "1IR3",
+      "ligand": "ANP",
+      "protein": "insulin receptor kinase",
+      "exact_rank": 7,
+      "gallery_size": 19,
+      "top_hit": "1DV2 ATP",
+      "same_ligand": false
+    }
+  ],
+  "rmsd": [
+    {
+      "pdb_id": "1ATP",
+      "ligand": "ATP",
+      "split": "train",
+      "rmsd": 4.75202751159668
+    },
+    {
+      "pdb_id": "1HCK",
+      "ligand": "ATP",
+      "split": "train",
+      "rmsd": 3.986610174179077
+    },
+    {
+      "pdb_id": "1CSN",
+      "ligand": "ATP",
+      "split": "train",
+      "rmsd": 4.645204544067383
+    },
+    {
+      "pdb_id": "1BYQ",
+      "ligand": "ADP",
+      "split": "train",
+      "rmsd": 3.922694206237793
+    },
+    {
+      "pdb_id": "1AKE",
+      "ligand": "AP5",
+      "split": "train",
+      "rmsd": 8.119050979614258
+    },
+    {
+      "pdb_id": "1MBO",
+      "ligand": "HEM",
+      "split": "train",
+      "rmsd": 5.3635573387146
+    },
+    {
+      "pdb_id": "1HDA",
+      "ligand": "HEM",
+      "split": "train",
+      "rmsd": 5.0913405418396
+    },
+    {
+      "pdb_id": "2HCK",
+      "ligand": "QUE",
+      "split": "train",
+      "rmsd": 3.8331539630889893
+    },
+    {
+      "pdb_id": "1HSG",
+      "ligand": "MK1",
+      "split": "train",
+      "rmsd": 5.748383522033691
+    },
+    {
+      "pdb_id": "3ERT",
+      "ligand": "OHT",
+      "split": "train",
+      "rmsd": 4.63332462310791
+    },
+    {
+      "pdb_id": "1HWK",
+      "ligand": "117",
+      "split": "train",
+      "rmsd": 5.023614883422852
+    },
+    {
+      "pdb_id": "1EVE",
+      "ligand": "E20",
+      "split": "train",
+      "rmsd": 5.02658748626709
+    },
+    {
+      "pdb_id": "1DV2",
+      "ligand": "ATP",
+      "split": "test",
+      "rmsd": 4.777837753295898
+    },
+    {
+      "pdb_id": "1KAX",
+      "ligand": "ATP",
+      "split": "test",
+      "rmsd": 5.053167819976807
+    },
+    {
+      "pdb_id": "1BG2",
+      "ligand": "ADP",
+      "split": "test",
+      "rmsd": 3.915243625640869
+    },
+    {
+      "pdb_id": "1ECD",
+      "ligand": "HEM",
+      "split": "test",
+      "rmsd": 4.852006435394287
+    },
+    {
+      "pdb_id": "1IEP",
+      "ligand": "STI",
+      "split": "test",
+      "rmsd": 6.823842525482178
+    },
+    {
+      "pdb_id": "1M17",
+      "ligand": "AQ4",
+      "split": "test",
+      "rmsd": 5.424302577972412
+    },
+    {
+      "pdb_id": "1IR3",
+      "ligand": "ANP",
+      "split": "test",
+      "rmsd": 4.517611980438232
+    }
+  ]
+}

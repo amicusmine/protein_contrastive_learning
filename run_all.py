@@ -95,7 +95,7 @@ def main():
     
     print("\n📝 下一步:")
     print("  - 运行 'python demo.py' 查看应用示例")
-    print("  - 阅读 'TUTORIAL.md' 深入学习")
+    print("  - 阅读 README.md")
     print("  - 修改参数重新训练获得更好的结果")
     
     return 0

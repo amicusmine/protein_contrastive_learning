@@ -81,98 +81,46 @@ def extract_binding_site(pdb_file, ligand_name, output_file):
 
 
 def create_sample_dataset():
-    """创建一个小型示例数据集"""
+    """Write one row per complex, using the ligand code deposited in that PDB."""
+    from structures import COMPLEXES
+
     print("创建示例数据集...")
-    
-    # 使用一些经典的ATP结合蛋白（正样本对）
-    # 和其他不同功能的蛋白（负样本）
-    sample_data = {
-        'ATP_binding': [
-            {'pdb': '1ATP', 'ligand': 'ATP', 'name': 'Protein Kinase'},
-            {'pdb': '3LZA', 'ligand': 'ATP', 'name': 'HSP90'},
-            {'pdb': '2HCK', 'ligand': 'ATP', 'name': 'Tyrosine Kinase'},
-        ],
-        'ADP_binding': [
-            {'pdb': '1AKE', 'ligand': 'ADP', 'name': 'Adenylate Kinase'},
-            {'pdb': '4AKE', 'ligand': 'ADP', 'name': 'Adenylate Kinase variant'},
-        ],
-        'Heme_binding': [
-            {'pdb': '1MBO', 'ligand': 'HEM', 'name': 'Myoglobin'},
-            {'pdb': '1HDA', 'ligand': 'HEM', 'name': 'Hemoglobin'},
-        ],
-        'other': [
-            {'pdb': '1ALC', 'ligand': 'BEN', 'name': 'Alcohol Dehydrogenase'},
-            {'pdb': '1TRZ', 'ligand': 'NAD', 'name': 'Transaldolase'},
-        ]
-    }
-    
-    # 保存元数据
     metadata = []
     os.makedirs('data/processed', exist_ok=True)
-    
+
     print("\n下载PDB文件...")
-    for category, proteins in sample_data.items():
-        for protein in tqdm(proteins, desc=f"Processing {category}"):
-            pdb_id = protein['pdb']
-            pdb_file = download_pdb(pdb_id)
-            
-            if pdb_file:
-                metadata.append({
-                    'pdb_id': pdb_id,
-                    'category': category,
-                    'ligand': protein['ligand'],
-                    'name': protein['name'],
-                    'pdb_file': pdb_file
-                })
-    
+    for pdb_id, ligand, title, split in COMPLEXES:
+        pdb_file = download_pdb(pdb_id)
+        if pdb_file:
+            metadata.append({
+                'pdb_id': pdb_id,
+                'category': ligand,
+                'ligand': ligand,
+                'name': title,
+                'pdb_file': pdb_file,
+                'split': split,
+            })
+
     df = pd.DataFrame(metadata)
     df.to_csv('data/processed/metadata.csv', index=False)
     print(f"\n成功处理 {len(df)} 个蛋白质")
-    
     return df
 
 
-def create_positive_pairs(metadata_df):
-    """创建正样本对（相同配体类别）"""
+def pairs_within(metadata_df):
+    """Pair proteins only inside one split. The same ligand is a positive pair."""
     pairs = []
-    
-    for category in metadata_df['category'].unique():
-        category_proteins = metadata_df[metadata_df['category'] == category]['pdb_id'].tolist()
-        
-        # 同类别内两两配对
-        for i in range(len(category_proteins)):
-            for j in range(i + 1, len(category_proteins)):
-                pairs.append({
-                    'pdb1': category_proteins[i],
-                    'pdb2': category_proteins[j],
-                    'label': 1,  # 正样本
-                    'category': category
-                })
-    
-    return pairs
-
-
-def create_negative_pairs(metadata_df, num_negatives=20):
-    """创建负样本对（不同配体类别）"""
-    pairs = []
-    categories = metadata_df['category'].unique()
-    
-    for i, cat1 in enumerate(categories):
-        for cat2 in categories[i+1:]:
-            proteins_cat1 = metadata_df[metadata_df['category'] == cat1]['pdb_id'].tolist()
-            proteins_cat2 = metadata_df[metadata_df['category'] == cat2]['pdb_id'].tolist()
-            
-            # 随机采样负样本对
-            for _ in range(min(num_negatives, len(proteins_cat1) * len(proteins_cat2))):
-                p1 = np.random.choice(proteins_cat1)
-                p2 = np.random.choice(proteins_cat2)
-                pairs.append({
-                    'pdb1': p1,
-                    'pdb2': p2,
-                    'label': 0,  # 负样本
-                    'category': f"{cat1}_vs_{cat2}"
-                })
-    
+    records = metadata_df.to_dict('records')
+    for i in range(len(records)):
+        for j in range(i + 1, len(records)):
+            left, right = records[i], records[j]
+            same = left['ligand'] == right['ligand']
+            pairs.append({
+                'pdb1': left['pdb_id'],
+                'pdb2': right['pdb_id'],
+                'label': int(same),
+                'category': left['ligand'] if same else f"{left['ligand']}_vs_{right['ligand']}",
+            })
     return pairs
 
 
@@ -189,32 +137,29 @@ def main():
     # 1. 创建示例数据集
     metadata_df = create_sample_dataset()
     
-    # 2. 创建正负样本对
+    # 2. 正负样本对只在同一个 split 内生成，测试蛋白不会进入训练对
     print("\n创建正负样本对...")
-    positive_pairs = create_positive_pairs(metadata_df)
-    negative_pairs = create_negative_pairs(metadata_df)
-    
-    all_pairs = positive_pairs + negative_pairs
-    pairs_df = pd.DataFrame(all_pairs)
+    train_proteins = metadata_df[metadata_df['split'] == 'train']
+    test_proteins = metadata_df[metadata_df['split'] == 'test']
+    train_pairs = pairs_within(train_proteins)
+    test_pairs = pairs_within(test_proteins)
+    rng = np.random.default_rng(0)
+    order = rng.permutation(len(train_pairs))
+    n_val = max(1, int(round(0.2 * len(train_pairs))))
+    val_index = set(order[:n_val].tolist())
+    val_pairs = [pair for i, pair in enumerate(train_pairs) if i in val_index]
+    fit_pairs = [pair for i, pair in enumerate(train_pairs) if i not in val_index]
+
+    pairs_df = pd.DataFrame(fit_pairs + val_pairs + test_pairs)
     pairs_df.to_csv('data/processed/pairs.csv', index=False)
-    
-    print(f"正样本对: {len(positive_pairs)}")
-    print(f"负样本对: {len(negative_pairs)}")
-    print(f"总样本对: {len(all_pairs)}")
-    
-    # 3. 划分训练/验证/测试集
-    from sklearn.model_selection import train_test_split
-    
-    train_val, test = train_test_split(pairs_df, test_size=0.2, random_state=42)
-    train, val = train_test_split(train_val, test_size=0.2, random_state=42)
-    
-    train.to_csv('data/processed/train.csv', index=False)
-    val.to_csv('data/processed/val.csv', index=False)
-    test.to_csv('data/processed/test.csv', index=False)
-    
-    print(f"\n训练集: {len(train)} 对")
-    print(f"验证集: {len(val)} 对")
-    print(f"测试集: {len(test)} 对")
+    pd.DataFrame(fit_pairs).to_csv('data/processed/train.csv', index=False)
+    pd.DataFrame(val_pairs).to_csv('data/processed/val.csv', index=False)
+    pd.DataFrame(test_pairs).to_csv('data/processed/test.csv', index=False)
+
+    print(f"训练蛋白对: {len(fit_pairs)}")
+    print(f"验证蛋白对: {len(val_pairs)}")
+    print(f"测试蛋白对: {len(test_pairs)}")
+    print("验证对来自训练蛋白；测试对只含测试蛋白。")
     
     print("\n" + "=" * 50)
     print("数据准备完成！")

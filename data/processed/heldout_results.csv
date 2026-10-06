@@ -1,0 +1,8 @@
+pdb_id,ligand,protein,exact_rank,gallery_size,top_hit,same_ligand
+1DV2,ATP,biotin carboxylase,1,19,1DV2 ATP,True
+1KAX,ATP,Hsp70,5,19,1BYQ ADP,False
+1BG2,ADP,kinesin,4,19,1DV2 ATP,False
+1ECD,HEM,erythrocruorin,10,19,1HCK ATP,False
+1IEP,STI,Abl kinase,14,19,1HCK ATP,False
+1M17,AQ4,EGFR kinase,13,19,1HCK ATP,False
+1IR3,ANP,insulin receptor kinase,7,19,1DV2 ATP,False

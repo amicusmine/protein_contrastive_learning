@@ -7,4 +7,5 @@ data/cache/
 data/raw/
 results/
 *.pt
+!models/*.pt
 .DS_Store

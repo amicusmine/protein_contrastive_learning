@@ -1,10 +1,20 @@
-pdb_id,category,ligand,name,pdb_file
-1ATP,ATP_binding,ATP,Protein Kinase,data/raw/1ATP.pdb
-3LZA,ATP_binding,ATP,HSP90,data/raw/3LZA.pdb
-2HCK,ATP_binding,ATP,Tyrosine Kinase,data/raw/2HCK.pdb
-1AKE,ADP_binding,ADP,Adenylate Kinase,data/raw/1AKE.pdb
-4AKE,ADP_binding,ADP,Adenylate Kinase variant,data/raw/4AKE.pdb
-1MBO,Heme_binding,HEM,Myoglobin,data/raw/1MBO.pdb
-1HDA,Heme_binding,HEM,Hemoglobin,data/raw/1HDA.pdb
-1ALC,other,BEN,Alcohol Dehydrogenase,data/raw/1ALC.pdb
-1TRZ,other,NAD,Transaldolase,data/raw/1TRZ.pdb
+pdb_id,category,ligand,name,pdb_file,split
+1ATP,ATP,ATP,cAMP-dependent protein kinase,data/raw/1ATP.pdb,train
+1HCK,ATP,ATP,cyclin-dependent kinase 2,data/raw/1HCK.pdb,train
+1CSN,ATP,ATP,casein kinase 1,data/raw/1CSN.pdb,train
+1BYQ,ADP,ADP,Hsp90,data/raw/1BYQ.pdb,train
+1AKE,AP5,AP5,adenylate kinase,data/raw/1AKE.pdb,train
+1MBO,HEM,HEM,myoglobin,data/raw/1MBO.pdb,train
+1HDA,HEM,HEM,hemoglobin,data/raw/1HDA.pdb,train
+2HCK,QUE,QUE,Src-family kinase Hck,data/raw/2HCK.pdb,train
+1HSG,MK1,MK1,HIV protease,data/raw/1HSG.pdb,train
+3ERT,OHT,OHT,estrogen receptor,data/raw/3ERT.pdb,train
+1HWK,117,117,HMG-CoA reductase,data/raw/1HWK.pdb,train
+1EVE,E20,E20,acetylcholinesterase,data/raw/1EVE.pdb,train
+1DV2,ATP,ATP,biotin carboxylase,data/raw/1DV2.pdb,test
+1KAX,ATP,ATP,Hsp70,data/raw/1KAX.pdb,test
+1BG2,ADP,ADP,kinesin,data/raw/1BG2.pdb,test
+1ECD,HEM,HEM,erythrocruorin,data/raw/1ECD.pdb,test
+1IEP,STI,STI,Abl kinase,data/raw/1IEP.pdb,test
+1M17,AQ4,AQ4,EGFR kinase,data/raw/1M17.pdb,test
+1IR3,ANP,ANP,insulin receptor kinase,data/raw/1IR3.pdb,test
